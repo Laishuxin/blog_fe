@@ -1,0 +1,17 @@
+{
+  "devDependencies": {
+    "@vuepress/plugin-back-to-top": "^1.8.2",
+    "@vuepress/theme-blog": "^2.3.3",
+    "dotenv": "^8.2.0",
+    "moment": "^2.29.1",
+    "vuepress": "^1.8.2",
+    "vuepress-plugin-smooth-scroll": "^0.0.10",
+    "vuepress-theme-hope": "^1.13.4"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "dev": "yarn docs:dev",
+    "deploy": "bash deploy.sh"
+  }
+}
