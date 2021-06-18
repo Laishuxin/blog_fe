@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使盒子居中的解决方案</title>
+  <style>
+    .parent {
+      width: 800px;
+      height: 1000px;
+      background: lightgreen;
+    }
+    
+    .box {
+      width: 200px;
+      height: 200px;
+      background: lightgray;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="parent">
+    <div class="box"></div>
+  </div>
+  <script>
+    const parent = document.querySelector('.parent');
+    const box = document.querySelector('.box')
+    const unit = 'px';
+    setCentering(parent, box);
+
+    function setCentering(parent, child) {
+      setPosition(parent, child);
+      const [ pWidth, pHeight ] = getClientSize(parent);
+      const [ cWidth, cHeight ] = getOffsetSize(child);
+      
+      child.style.left = (pWidth - cWidth) / 2 + unit;
+      child.style.top  = (pHeight - cHeight) / 2 + unit;
+    }
+
+    function setPosition(parent, child) {
+      parent.style.position = 'relative';
+      child.style.position  = 'absolute';
+    }
+
+    function getClientSize(element) {
+      return [ element.clientWidth, element.clientHeight ];
+    }
+
+    function getOffsetSize(element) {
+      return [ element.offsetWidth, element.offsetHeight ];
+    }
+  </script>
+</body>
+</html>
