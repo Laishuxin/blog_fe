@@ -6,31 +6,26 @@ const cate = ['html', 'css', 'js', 'ts'];
 const getSidebarName = (name) => `/cate/${name}/`;
 
 const sidebar = {
-  [getSidebarName('html')]: getHtml('interview'),
+  [getSidebarName('html')]: getHtml('interview', '基础'),
+  [getSidebarName('js')]: getJs(),
   '/cate/': cate,
 };
 
 function getHtml(...groups) {
-  const path = resolve(basePath, './cate/html/')
-  const group = getFileNamesByGroups(path, groups)
+  const path = resolve(basePath, './cate/html/');
+  const group = getFileNamesByGroups(path, groups);
   return groups.map((item) => {
     return {
       title: item,
       collapsable: false,
       children: group[item]
-    }
+    };
   })
 }
 
+function getJs() {
+  const path = resolve(basePath, './cate/js');
+  return getFileNames(path);
+}
 
-// const sidebar = {
-//   [getSidebarName('csapp')]: getCsapp('Part I: Program Structure and Execution'),
-//   [getSidebarName('design-patterns')]: getDesignPatterns(),
-//   '/cate/': cate
-// }
-
-// function getDesignPatterns() {
-//   const path = resolve(basePath, './cate/design-patterns')
-//   return getFileNames(path)
-// }
 module.exports = sidebar
