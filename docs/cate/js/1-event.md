@@ -2,7 +2,7 @@
 title: js - event
 time: 2021-06-19
 author: ru shui
-category: js
+category: javascript
 tag:
   - javascript
   - event
