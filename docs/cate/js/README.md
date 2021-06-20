@@ -10,6 +10,8 @@ article: true
 sticky: true
 ---
 
+## content
+
 - [ event ](./1-event.md)
 - [ debounce ](./2-debounce.md)
 - [ throttle ](./3-throttle.md)
