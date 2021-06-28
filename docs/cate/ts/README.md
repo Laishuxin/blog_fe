@@ -12,3 +12,5 @@ sticky: true
 
 ## content
 
+- [ ts - infer ](./1-infer.md)
+- [ ts - 常用技巧 ](./2-tips.md)
