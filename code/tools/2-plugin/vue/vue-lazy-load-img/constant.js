@@ -1,0 +1,5 @@
+export const CLASS_V_LOADING = 'v-lazy-loading'
+export const CLASS_V_LOADED = 'v-lazy-loaded'
+export const CLASS_V_ERROR = 'v-lazy-error'
+export const DATA_SRC_NAME = 'data-src'
+export const DATA_ERR_NAME = 'data-err'

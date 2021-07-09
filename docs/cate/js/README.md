@@ -15,3 +15,4 @@ sticky: true
 - [ event ](./1-event.md)
 - [ debounce ](./2-debounce.md)
 - [ throttle ](./3-throttle.md)
+- [ lazyload and preload ](./3-throttle.md)

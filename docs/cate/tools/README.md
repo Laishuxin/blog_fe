@@ -15,3 +15,4 @@ sticky: true
 ## content
 
 - [ 前端模块化 ](./1-modularize.md)
+- [ 插件- vue-lazy-load](2_1-plugin-vue-lazyload.md)

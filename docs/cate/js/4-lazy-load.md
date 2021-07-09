@@ -69,6 +69,65 @@ function isInVisibleArea(el, parent) {
 </template>
 ```
 
+### 另一种方式
+
+现代浏览器为我们提供了判断元素是否在可视化视口内的 API，
+根据这个 API 我们可以很容易实现图片懒加载：
+
+```javascript
+const data = [
+  { src: 'images/1.png', name: 'pic1' },
+  { src: 'images/2.png', name: 'pic2' },
+  { src: 'images/3.png', name: 'pic3' },
+  { src: 'images/4.png', name: 'pic4' },
+  { src: 'images/5.png', name: 'pic5' },
+  { src: 'images/6.png', name: 'pic6' },
+  { src: 'images/7.png', name: 'pic7' },
+  { src: 'images/8.png', name: 'pic8' }
+]
+
+const template = document.getElementsByTagName('template')[0].innerHTML
+const container = document.querySelector('.img-list')
+const imgListStr = render(data, template)
+container.innerHTML = imgListStr
+const images = container.querySelectorAll('img')
+
+let count = 0
+const length = images.length
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    const target = entry.target
+    if (entry.intersectionRatio > 0) {
+      target.src = target.getAttribute('data-src')
+      target.removeAttribute('data-src')
+      io.unobserve(target)
+      if (++count === length) {
+        io.disconnect()
+      }
+    }
+  })
+})
+
+images.forEach((item) => {
+  io.observe(item)
+})
+
+function render(data, template) {
+  let imgStr
+  const imgStrArr = []
+  data.forEach((item) => {
+    imgStr = template.replace(/{{(.*?)}}/g, function (_, key) {
+      return {
+        src: item['src'],
+        name: item['name']
+      }[key]
+    })
+    imgStrArr.push(imgStr)
+  })
+  return imgStrArr.join('')
+}
+```
+
 我们定义了一个 `img-list` 的容器，用于存放图片，
 我们将 `template` 中的代码作为我们的模板 html。
 其中，`./images/pad.png` 是一张背景图片，相当于骨架图。
