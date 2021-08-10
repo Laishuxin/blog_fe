@@ -14,3 +14,5 @@ sticky: false
 ## content
 
 - [ 前端框架 - 关于 vue 的一些问题](./1_vue2-insight.md)
+- [ vue2 源码中的几个工具函数 ](./2_vue-utils.md)
+- [ vue2 dispatcher ](./3_vue2-dispatcher.md)
