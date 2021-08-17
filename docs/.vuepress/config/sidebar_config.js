@@ -10,7 +10,8 @@ const sidebar = {
   [getSidebarName('html')]: getHtml('interview', '基础'),
   [getSidebarName('js')]: getJs(),
   [getSidebarName('perform')]: getPerform(),
-  [`${getSidebarName('framework')}vue/`]: getFrameworkVue(),
+  [`${getSidebarName('framework')}vue/`]: getFrameworkByName('vue'),
+  [`${getSidebarName('framework')}react/`]: getFrameworkByName('react'),
   [getSidebarName('framework')]: getFramework(),
   [getSidebarName('ts')]: getTs(),
   '/cate': cate
@@ -52,10 +53,13 @@ function getTs() {
   return getFileNames(path)
 }
 
-function getFrameworkVue() {
-  const path = resolve(basePath, './cate/framework/vue')
-  return getFileNames(path)
+function getFrameworkByName(name) {
+  return getFileNames(resolve(basePath, './cate/framework/' + name))
 }
+// function getFrameworkVue() {
+//   const path = resolve(basePath, './cate/framework/vue')
+//   return getFileNames(path)
+// }
 
 function getTools(...groups) {
   const path = resolve(basePath, './cate/tools')
