@@ -5,7 +5,7 @@ author: ru shui
 category: framework
 tag:
   - react
-- lifecycle
+  - lifecycle
 visitor: false
 article: true
 sticky: false
