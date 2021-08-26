@@ -41,6 +41,7 @@ function getIntersectionObserver() {
   if (!isSupportIntersectionObserver) {
     return null
   }
+
   return new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -54,16 +55,17 @@ function getIntersectionObserver() {
         newImage.src = dataSrc
 
         newImage.onload = function () {
-          lazyImage.classList.remove(CLASS_V_LOADED)
+          lazyImage.classList.remove(CLASS_V_LOADING)
           lazyImage.src = dataSrc
-          clear(lazyImage, CLASS_V_LOADED)
+          clearAndAdd(lazyImage, CLASS_V_LOADED)
         }
 
         newImage.onerror = function () {
-          lazyImage.classList.remove(CLASS_V_LOADED)
+          lazyImage.classList.remove(CLASS_V_LOADING)
           lazyImage.src = dataErr
-          clear(lazyImage, CLASS_V_ERROR)
+          clearAndAdd(lazyImage, CLASS_V_ERROR)
         }
+
         io.unobserve(lazyImage)
       }
     })
@@ -71,12 +73,12 @@ function getIntersectionObserver() {
 }
 
 /**
- * Performing cleanup operations.
+ * Performing cleanup operations and add className.
  * @param { HTMLImageElement } lazyImage
- * @param { string } addClassName
+ * @param { string } className
  */
-function clear(lazyImage, addClassName) {
-  lazyImage.classList.add(addClassName)
+function clearAndAdd(lazyImage, className) {
+  lazyImage.classList.add(className)
   lazyImage.removeAttribute(DATA_ERR_NAME)
   lazyImage.removeAttribute(DATA_SRC_NAME)
 }
