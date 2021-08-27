@@ -14,14 +14,15 @@ sticky: false
 由于 vue2 采用的是 options API，导致我们在单个组件中容易组件组件臃肿的现象。
 这里提供了一种可行的方法，将 methods 从组件中抽离出来。
 
-## 示例1：一个简单的 Counter
+## 示例 1：一个简单的 Counter
 
 下面将以一个简单的 Counter 为例，展示如何将 vue2 组件中的 methods 抽离。
+
 ```vue
 // @/components/counter/index.vue
 <template>
   <div class="counter">
-    <counter-result :result="result"/>
+    <counter-result :result="result" />
     <div class="btns">
       <counter-button field="plus" innerText="+" @compute="compute" />
       <counter-button field="minus" innerText="-" @compute="compute" />
@@ -36,21 +37,23 @@ export default {
   name: 'Counter',
   components: {
     CounterResult,
-    CounterButton
+    CounterButton,
   },
-  data() { return { result: 0 } },
+  data() {
+    return { result: 0 }
+  },
   methods: {
     compute(action) {
       switch (action) {
         case 'plus':
-          return this.result += 1;
+          return (this.result += 1)
         case 'minus':
-          return this.result -= 1;
+          return (this.result -= 1)
         default:
-          break;
+          break
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -66,7 +69,7 @@ export default {
   name: 'CounterResult',
   props: {
     result: Number,
-  }
+  },
 }
 </script>
 
@@ -85,11 +88,10 @@ export default {
   methods: {
     compute() {
       this.$emit('compute', this.field)
-    }
-  }
+    },
+  },
 }
 </script>
-
 ```
 
 我们这里准备将 `@/components/counter/index.vue` 中的方法进行抽离，采用派发器的方式实现。
@@ -100,6 +102,7 @@ export default {
 我们在 action 目录下存放我们要派发的任务类型。
 reducers 目录则存放相关的处理逻辑。dispatchers 会根据
 不同的 action 派发不同的处理逻辑。具体代码如下：
+
 ```javascript
 // redux/action/counter.js
 export const PLUS  = 'PLUS';
@@ -110,7 +113,7 @@ export default function counterReducer(data) {
   function plus() {
     data.result += 1;
   }
-  
+
   function minus() {
     data.result -= 1;
   }
@@ -143,10 +146,11 @@ export default (ctx) => {
 ```
 
 接下来开始抽离 counter 中的 methods：
+
 ```vue
 <template>
-    <counter-button field="PLUS" innerText="+" @compute="dispatch" />
-    <counter-button field="MINUS" innerText="-" @compute="dispatch" />
+  <counter-button field="PLUS" innerText="+" @compute="dispatch" />
+  <counter-button field="MINUS" innerText="-" @compute="dispatch" />
 </template>
 <script>
 import dispatcher from '@/redux/dispatchers/counter';
@@ -172,10 +176,26 @@ import dispatcher from '@/redux/dispatchers/counter';
       <calculator-input @setNumber="dispatch" field="secondNumber" />
     </div>
     <div class="btns" @click="handleBtnsClick">
-      <calculator-button :class="{active: currentType === 'PLUS'}" type="PLUS" innerText="+" />
-      <calculator-button :class="{active: currentType === 'MINUS'}" type="MINUS" innerText="-" />
-      <calculator-button :class="{active: currentType === 'MUL'}" type="MUL" innerText="*" />
-      <calculator-button :class="{active: currentType === 'DIV'}" type="DIV" innerText="/" />
+      <calculator-button
+        :class="{ active: currentType === 'PLUS' }"
+        type="PLUS"
+        innerText="+"
+      />
+      <calculator-button
+        :class="{ active: currentType === 'MINUS' }"
+        type="MINUS"
+        innerText="-"
+      />
+      <calculator-button
+        :class="{ active: currentType === 'MUL' }"
+        type="MUL"
+        innerText="*"
+      />
+      <calculator-button
+        :class="{ active: currentType === 'DIV' }"
+        type="DIV"
+        innerText="/"
+      />
     </div>
   </div>
 </template>
@@ -199,13 +219,15 @@ export default {
       firstNumber: 0,
       secondNumber: 0,
       result: 0,
-      currentType: 'PLUS'
+      currentType: 'PLUS',
     }
   },
   methods: {
     handleBtnsClick(e) {
       const { target } = e
-      if (!target && target.tagName.toLowerCase() !== 'button') { return }
+      if (!target && target.tagName.toLowerCase() !== 'button') {
+        return
+      }
       const type = target.dataset.type
       if (this.currentType !== type) {
         // debugger
@@ -215,13 +237,16 @@ export default {
 
     dispatch(...args) {
       dispatcher(this)(...args)
-    }
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.active { background: orange; color: #fff; }
+.active {
+  background: orange;
+  color: #fff;
+}
 </style>
 
 // @/components/calculator/calculator-input.vue
@@ -260,7 +285,7 @@ export default {
   name: 'CalculatorResult',
   props: {
     result: Number,
-  }
+  },
 }
 </script>
 
@@ -274,13 +299,14 @@ export default {
   name: 'CalculatorButton',
   props: {
     innerText: String,
-    type: String
+    type: String,
   },
 }
 </script>
 ```
 
 抽离出来的逻辑如下：
+
 ```javascript
 // @/redux/action/calculator.js
 export const SET_NUMBER  = 'SET_NUMBER'
@@ -298,7 +324,7 @@ export default data => {
     data.currentType = type
     return (data.result = compute(data.currentType, data.firstNumber, data.secondNumber))
   }
-  
+
   return {
     setNumber,
     changeType,
@@ -322,6 +348,5 @@ export default (ctx) => {
   }
 }
 ```
-
 
 ## reference

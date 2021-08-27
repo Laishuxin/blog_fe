@@ -4,7 +4,7 @@ const RESERVED_PROPS = {
   key: true,
   ref: true,
   _self: true,
-  _source: true
+  _source: true,
 }
 
 var ReactElement = function (type, key, ref, self, source, owner, props) {
@@ -17,7 +17,7 @@ var ReactElement = function (type, key, ref, self, source, owner, props) {
     ref: ref,
     props: props,
     // Record the component responsible for creating this element.
-    _owner: owner
+    _owner: owner,
   }
 
   {
@@ -34,14 +34,14 @@ var ReactElement = function (type, key, ref, self, source, owner, props) {
       configurable: false,
       enumerable: false,
       writable: true,
-      value: false
+      value: false,
     }) // self and source are DEV only properties.
 
     Object.defineProperty(element, '_self', {
       configurable: false,
       enumerable: false,
       writable: false,
-      value: self
+      value: self,
     }) // Two elements created in two different places should be considered
     // equal for testing purposes and therefore we hide it from enumeration.
 
@@ -49,7 +49,7 @@ var ReactElement = function (type, key, ref, self, source, owner, props) {
       configurable: false,
       enumerable: false,
       writable: false,
-      value: source
+      value: source,
     })
 
     if (Object.freeze) {
@@ -66,7 +66,7 @@ function createElement(type, props, children) {
   let key = props.key ? props.key : null
 
   const propsKeys = Object.keys(props)
-  propsKeys.forEach((key) => {
+  propsKeys.forEach(key => {
     if (RESERVED_PROPS[key]) return
     _props[key] = props[key]
   })

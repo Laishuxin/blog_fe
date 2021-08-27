@@ -74,35 +74,38 @@ sticky: false
 function checkWebp() {
   try {
     // "data:image/webp;base64,Uxxx"
-    return document.createElement('canvas')
-            .toDataURL('image/webp')
-            .indexOf('data:image/webp');
+    return document
+      .createElement('canvas')
+      .toDataURL('image/webp')
+      .indexOf('data:image/webp')
   } catch (e) {
-    return false;
+    return false
   }
 }
 
-const isSupportWebp = checkWebp();
+const isSupportWebp = checkWebp()
 
 /**
  * Transform url to support webp.
- * @param { string } url 
+ * @param { string } url
  * @returns { string } transformed url.
  */
 function transformUrl(url) {
   if (!url) {
     throw new Error(`${url} is invalid.`)
   }
-  if (isSupportWebp) { return `${url}?xxxx` }
-  return url;
+  if (isSupportWebp) {
+    return `${url}?xxxx`
+  }
+  return url
 }
 ```
 
 注意事项：
+
 1. 需要判断当前浏览器是否支持 `webp` 格式。
    不同的浏览器的兼容性不同，可以通过 [ can I use ](https://caniuse.com/)
    查看不同浏览器的兼容性。
    落实到代码上，我们首先需要检测是否支持 `webp`，其次在对其进行转换。
 2. 执行转换的过程中，还需要考虑到参数传入的问题。
    可能传入的 `url` 为空，也可能传入的 `url` 本身是一个 `base64` 的格式。
-

@@ -54,7 +54,7 @@ sticky: false
 const vDOM = React.createElement(
   'h1',
   { id: 'title', style: { color: 'white', background: 'back' } },
-  React.createElement('span', null, 'hello react')
+  React.createElement('span', null, 'hello react'),
 )
 console.log('vDOM: ', vDOM)
 ```
@@ -62,6 +62,7 @@ console.log('vDOM: ', vDOM)
 ![](./images/2021-08-16-09-26-50.png)
 
 2. virtual DOM 的优点。
+
    - 处理浏览器的兼容性问题，避免用户直接操作真实 DOM 对象。
    - 内容经过转义处理，可以有效避免 XSS 攻击。
    - virtual DOM 内容与平台无关，可以实现跨平台。
@@ -70,4 +71,3 @@ console.log('vDOM: ', vDOM)
 3. virtual DOM 的缺点。
    - 初次渲染的时候并不是很快。
    - 占用内存。
-

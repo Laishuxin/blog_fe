@@ -12,19 +12,19 @@ module.exports = config({
   description: `To Build Amazing Things !`,
   theme: 'vuepress-theme-hope',
   head,
-  themeConfig:{
+  themeConfig: {
     author: BLOG_AUTHOR,
     logo: '/assets/img/logo.png',
     blog: {
       sidebarDisplay: true,
-      roundAvatar:false,
+      roundAvatar: false,
     },
     nav,
     sidebar,
     footer: {
       display: true,
       content: '<h2 style="width:100%; min-width: 100%;">Ru Shui</h2>',
-      copyright: `MIT Licensed | Copyright © 2021-present Ru Shui`
+      copyright: `MIT Licensed | Copyright © 2021-present Ru Shui`,
     },
     nextLinks: true,
     prevLinks: true,
@@ -49,7 +49,7 @@ module.exports = config({
       footnote: true,
     },
     pwa: {
-      cacheHTML: false
-    }
+      cacheHTML: false,
+    },
   },
 })

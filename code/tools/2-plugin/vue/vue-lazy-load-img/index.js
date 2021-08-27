@@ -2,7 +2,7 @@ import { observe, unobserve } from './lazy-load'
 import { CLASS_V_LOADED } from './constant'
 
 const plugin = {
-  install: (Vue) => {
+  install: Vue => {
     Vue.directive('lazyload', {
       bind(el) {
         observe(el)

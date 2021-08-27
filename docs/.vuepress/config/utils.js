@@ -11,13 +11,13 @@ function getFileNames(path) {
     const filesName = fs
       .readdirSync(path, { withFileTypes: true })
       .filter(
-        (item) =>
+        item =>
           item.isFile() &&
           !item.name.startsWith('_') &&
           item.name.endsWith('.md') &&
-          item.name !== 'README.md'
+          item.name !== 'README.md',
       )
-      .map((item) => {
+      .map(item => {
         const name = item.name
         return name.substr(0, name.lastIndexOf('.'))
       })
@@ -95,5 +95,5 @@ function mergeGroups(groups, groupNames = []) {
 
 module.exports = {
   getFileNames,
-  getFileNamesByGroups
+  getFileNamesByGroups,
 }

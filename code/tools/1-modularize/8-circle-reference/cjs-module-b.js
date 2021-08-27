@@ -1,9 +1,9 @@
-exports.done = false;
+exports.done = false
 
-var a = require('./cjs-module-a');
+var a = require('./cjs-module-a')
 // moduleB: a.done =  false
-console.log('moduleB: a.done = ', a.done);
+console.log('moduleB: a.done = ', a.done)
 
-exports.done = true;
+exports.done = true
 // moduleB: module has been loaded, loaded =  true
-console.log('moduleB: module has been loaded, loaded = ', exports.done);
+console.log('moduleB: module has been loaded, loaded = ', exports.done)

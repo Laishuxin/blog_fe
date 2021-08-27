@@ -51,7 +51,7 @@ function func2() {}
 
 ```javascript
 // ./module-a.js
-var a = [1, 2, 3, 4];
+var a = [1, 2, 3, 4]
 
 // ./module-b.js
 var b = {
@@ -59,12 +59,12 @@ var b = {
 }
 
 // ./module-c.js
-var c = a.map(item => item * item);
+var c = a.map(item => item * item)
 
 // ./main.js
-console.log(`a = ${JSON.stringify(a)}`);
-console.log(`b = ${JSON.stringify(b)}`);
-console.log(`c = ${JSON.stringify(c)}`);
+console.log(`a = ${JSON.stringify(a)}`)
+console.log(`b = ${JSON.stringify(b)}`)
+console.log(`c = ${JSON.stringify(c)}`)
 ```
 
 ```html
@@ -89,6 +89,7 @@ console.log(`c = ${JSON.stringify(c)}`);
 
 回到最初的问题：模块化究竟要解决什么问题？这里可以给出答案。
 模块化需要解决：
+
 1. 全局污染。
 2. 模块污染。
 
@@ -99,40 +100,40 @@ console.log(`c = ${JSON.stringify(c)}`);
 ```javascript
 // ./module-a.js
 var moduleA = (function () {
-  var a = [1, 2, 3, 4];
+  var a = [1, 2, 3, 4]
 
   return {
-    'a': a,
+    a: a,
   }
-})();
+})()
 
 // ./module-b.js
-var moduleB = (function (){
+var moduleB = (function () {
   var b = {
     name: 'module b',
-  };
+  }
 
   return {
-    'b': b,
+    b: b,
   }
-})();
+})()
 
 // ./module-c.js
-var moduleC = (function (){
-  var c = moduleA.a.map(item => item * item);
+var moduleC = (function () {
+  var c = moduleA.a.map(item => item * item)
   return {
-    'c': c
+    c: c,
   }
-})();
+})()
 
 // ./main.js
-var a = moduleA.a;
-var b = moduleB.b;
-var c = moduleC.c;
+var a = moduleA.a
+var b = moduleB.b
+var c = moduleC.c
 
-console.log(`module closure a = ${JSON.stringify(a)}`);
-console.log(`module closure b = ${JSON.stringify(b)}`);
-console.log(`module closure c = ${JSON.stringify(c)}`);
+console.log(`module closure a = ${JSON.stringify(a)}`)
+console.log(`module closure b = ${JSON.stringify(b)}`)
+console.log(`module closure c = ${JSON.stringify(c)}`)
 ```
 
 虽然我们解决了避免全局污染的问题，还有一个模块之间的相互依赖
@@ -142,23 +143,23 @@ console.log(`module closure c = ${JSON.stringify(c)}`);
 
 ```javascript
 // ./module-c.js
-var moduleC = (function (moduleA){
-  var c = moduleA.a.map(item => item * item);
+var moduleC = (function (moduleA) {
+  var c = moduleA.a.map(item => item * item)
   return {
-    'c': c
+    c: c,
   }
-})(moduleA);
+})(moduleA)
 
 // ./main.js
 ;(function (moduleA, moduleB, moduleC) {
-  var a = moduleA.a;
-  var b = moduleB.b;
-  var c = moduleC.c;
+  var a = moduleA.a
+  var b = moduleB.b
+  var c = moduleC.c
 
-  console.log(`module closure a = ${JSON.stringify(a)}`);
-  console.log(`module closure b = ${JSON.stringify(b)}`);
-  console.log(`module closure c = ${JSON.stringify(c)}`);
-})(moduleA, moduleB, moduleC);
+  console.log(`module closure a = ${JSON.stringify(a)}`)
+  console.log(`module closure b = ${JSON.stringify(b)}`)
+  console.log(`module closure c = ${JSON.stringify(c)}`)
+})(moduleA, moduleB, moduleC)
 ```
 
 我们采用模块注入的方式，将模块 A 注入到模块 C 中，从而实现模块之间的依赖关系。
@@ -171,6 +172,7 @@ nodejs 中提供 `require` 和 `module.exports` 进行模块化管理。
 在浏览器上的话，还需要 webpack 提供支持。
 
 commonJS 所提供的模块化管理方式具有如下特点：
+
 1. 同步进行。
 2. 只要引用就进行实例化。
 3. 缓存模块。每引用一个模块就对引用的模块进行缓存。
@@ -183,12 +185,14 @@ AMD 的出现就是为了可以在浏览器上直接使用类似于 `require` �
 
 与 commonJS 的模块化不同，AMD 采用的是异步模块的管理方式。
 其使用方法如下：
+
 1. 先引入 `require.js`。AMD 需要借助 `require.js` 实现。
 2. 定义模块和使用模块。
+
    ```javascript
    // 定义模块。
    define('moduleName', ['dependency1', 'dependency2', ...], function factory() {});
-   
+
    // 使用模块。
    require(['dependency1', 'dependency2', ...], function (inject1, inject2, ...) {})
    ```
@@ -198,7 +202,7 @@ AMD 的出现就是为了可以在浏览器上直接使用类似于 `require` �
 ```javascript
 // ./module-a.js
 define('module-a', function () {
-  var a = [1, 2, 3, 4, 5];
+  var a = [1, 2, 3, 4, 5]
   return {
     a: a,
   }
@@ -208,7 +212,7 @@ define('module-a', function () {
 define('module-b', function () {
   var b = {
     name: 'module b',
-  };
+  }
   return {
     b: b,
   }
@@ -216,20 +220,26 @@ define('module-b', function () {
 
 // ./module-c.js
 define('module-c', ['module-a'], function (moduleA) {
-  var c = moduleA.a.map(function (item) { return item * item; })
+  var c = moduleA.a.map(function (item) {
+    return item * item
+  })
   return {
     c: c,
   }
 })
 
 // ./main.js
-require(['module-a', 'module-b', 'module-c'], function (moduleA, moduleB, moduleC) {
-  var a = moduleA.a;
-  var b = moduleB.b;
-  var c = moduleC.c;
-  console.log(`commonjs a = ${JSON.stringify(a)}`);
-  console.log(`commonjs b = ${JSON.stringify(b)}`);
-  console.log(`commonjs c = ${JSON.stringify(c)}`);
+require(['module-a', 'module-b', 'module-c'], function (
+  moduleA,
+  moduleB,
+  moduleC,
+) {
+  var a = moduleA.a
+  var b = moduleB.b
+  var c = moduleC.c
+  console.log(`commonjs a = ${JSON.stringify(a)}`)
+  console.log(`commonjs b = ${JSON.stringify(b)}`)
+  console.log(`commonjs c = ${JSON.stringify(c)}`)
 })
 ```
 
@@ -256,10 +266,12 @@ amd 采用的是异步加载的方式，而且在使用模块时先将依赖到�
 
 CMD 的实现需要借助 `sea.js`。
 其特点是：
+
 1. 依赖就近。
 2. 按需加载。
-  
+
 使用方式如下：
+
 ```javascript
 // 1. 定义。
 define(function (require, exports, module) {})
@@ -275,32 +287,30 @@ ECMA 在 es6 中正式给出了 js 模块化的管理。
 我们就可以认为这是一个模块。
 
 下面让我们将之前的示例用 es6 提供的模块化重新编写一下。
+
 ```javascript
 // ./module-a.js
-var a = [1, 2, 3, 4, 5];
+var a = [1, 2, 3, 4, 5]
 
-export {
-  a,
-}
+export { a }
 
 // ./module-b.js
-var a = [1, 2, 3, 4, 5];
+var a = [1, 2, 3, 4, 5]
 
-export {
-  a,
-}
+export { a }
 
 // ./module-c.js
-import { a } from './module-a.js';
-var c = a.map(function (item) { return item * item; })
+import { a } from './module-a.js'
+var c = a.map(function (item) {
+  return item * item
+})
 
-export {
-  c
-}
+export { c }
 ```
 
 使用 es6 进行模块管理还需要浏览器支持，所以在引用时，
 需要指明改文件类型为 `module`。
+
 ```html
 <script src="./main.js" type="module"></script>
 ```
@@ -315,43 +325,42 @@ export {
 2. commonJS 是运行时加载，而 es6 是编译输出接口。
 
 要想解释第一点，我们来考虑如下的代码：
+
 ```javascript
 // common js 实现模块化
 // ./commonjs-module-a.js
-var a = 0;
+var a = 0
 
 setTimeout(() => {
-  a++;
-}, 0);
+  a++
+}, 0)
 
 module.exports = {
-  a
+  a,
 }
 
 // commonjs-main.js
-var moduleA = require('./commonjs-module-a');;
+var moduleA = require('./commonjs-module-a')
 
 setTimeout(() => {
-  console.log('commonjs a = ', moduleA.a); // commonjs a = 0
-}, 1000);
+  console.log('commonjs a = ', moduleA.a) // commonjs a = 0
+}, 1000)
 
 // es6 实现模块化
 // ./es6-module-a.js
-var a = 0;
+var a = 0
 
 setTimeout(() => {
-  a++;
-}, 0);
+  a++
+}, 0)
 
-export {
-  a
-}
+export { a }
 
-import { a } from './es6-module-a.js';
+import { a } from './es6-module-a.js'
 
 setTimeout(() => {
-  console.log('es6 a = ', a); // es6 a = 1;
-}, 1000);
+  console.log('es6 a = ', a) // es6 a = 1;
+}, 1000)
 ```
 
 通过输出可以验证，es6 和 commonJS 的对模块的定义是不同的。
@@ -376,33 +385,33 @@ setTimeout(() => {
 
 ```javascript
 // ./cjs-module-a.js
-exports.done = false;
+exports.done = false
 
-var b = require('./cjs-module-b');
+var b = require('./cjs-module-b')
 // moduleA: b.done =  true
-console.log('moduleA: b.done = ', b.done);
+console.log('moduleA: b.done = ', b.done)
 
-exports.done = true;
+exports.done = true
 // moduleA: module has been loaded, loaded =  true
-console.log('moduleA: module has been loaded, loaded = ', exports.done);
+console.log('moduleA: module has been loaded, loaded = ', exports.done)
 
 // ./cjs-module-b.js
-exports.done = false;
+exports.done = false
 
-var a = require('./cjs-module-a');
+var a = require('./cjs-module-a')
 // moduleB: a.done =  false
-console.log('moduleB: a.done = ', a.done);
+console.log('moduleB: a.done = ', a.done)
 
-exports.done = true;
+exports.done = true
 // moduleB: module has been loaded, loaded =  true
-console.log('moduleB: module has been loaded, loaded = ', exports.done);
+console.log('moduleB: module has been loaded, loaded = ', exports.done)
 
 // ./cjs-main.js
-var a = require('./cjs-module-a');
-var b = require('./cjs-module-b');
+var a = require('./cjs-module-a')
+var b = require('./cjs-module-b')
 
-console.log('main: a.done = ', a.done);
-console.log('main: b.done = ', b.done);
+console.log('main: a.done = ', a.done)
+console.log('main: b.done = ', b.done)
 ```
 
 ![cjs-loading](./images/cjs-loading.gif)
@@ -412,10 +421,10 @@ console.log('main: b.done = ', b.done);
 加载 `module-b`。
 加载 `module-b` 时，又引用了 `require('module-a')`，
 也就是循环引用了，
-这时候 `cjs` 引擎不会再去加载 `module-a`，但是，在 `module-b` 
+这时候 `cjs` 引擎不会再去加载 `module-a`，但是，在 `module-b`
 中我们可以使用到 `module-a` 中已经加载的部分，这就是为什么
-打印出 `moduleB: a.done =  false`。加载完 `module-b` 后，
-继续加载 `module-a`，所以输出 `moduleA: b.done =  true`。
+打印出 `moduleB: a.done = false`。加载完 `module-b` 后，
+继续加载 `module-a`，所以输出 `moduleA: b.done = true`。
 
 ### es6
 
@@ -426,25 +435,26 @@ es6 的加载过程与 cjs 类似，但是由于 es6 的模块化采用的是
 
 ```javascript
 // ./module-a.js
-import { done as BDone } from './es6-module-b.js';
-console.log('moduleA: start loading...');
+import { done as BDone } from './es6-module-b.js'
+console.log('moduleA: start loading...')
 
-export let done = false;
-done = true;
-console.log('moduleA: moduleA.done = ', done);
-console.log('moduleA: moduleB.done = ', BDone);
+export let done = false
+done = true
+console.log('moduleA: moduleA.done = ', done)
+console.log('moduleA: moduleB.done = ', BDone)
 
 // ./module-a.js
-import { done as ADone } from './es6-module-a.js';
-export let done = false;
+import { done as ADone } from './es6-module-a.js'
+export let done = false
 
-console.log('moduleB: start loading...');
+console.log('moduleB: start loading...')
 // Uncaught ReferenceError: Cannot access 'ADone' before initialization
-console.log('moduleB: ADone = ', ADone);
+console.log('moduleB: ADone = ', ADone)
 
-done = true;
-console.log('moduleB: b.done = ', done);
+done = true
+console.log('moduleB: b.done = ', done)
 ```
+
 上面代码执行时会抛出一个 `ReferenceError`，这是因为
 `module-b` 中在执行的过程中，`module-a` 还没有声明
 变量 `done`，这就就像 ts 中的接口，我们知道有这个值
@@ -457,24 +467,26 @@ console.log('moduleB: b.done = ', done);
 
 ```javascript
 // ./module-a.js
-import { done as BDone } from './es6-module-b.js';
-console.log('moduleA: start loading...');
+import { done as BDone } from './es6-module-b.js'
+console.log('moduleA: start loading...')
 
 // export let done = false;
-export function done() { return false; }
+export function done() {
+  return false
+}
 // done = true;
-console.log('moduleA: moduleA.done = ', done());
-console.log('moduleA: moduleB.done = ', BDone);
+console.log('moduleA: moduleA.done = ', done())
+console.log('moduleA: moduleB.done = ', BDone)
 
 // ./module-b.js
-import { done as ADone } from './es6-module-a.js';
-export let done = false;
+import { done as ADone } from './es6-module-a.js'
+export let done = false
 
-console.log('moduleB: start loading...');
-console.log('moduleB: ADone = ', ADone());
+console.log('moduleB: start loading...')
+console.log('moduleB: ADone = ', ADone())
 
-done = true;
-console.log('moduleB: b.done = ', done);
+done = true
+console.log('moduleB: b.done = ', done)
 ```
 
 同样的道理，我们也不能使用箭头函数，因为箭头函数也不具备

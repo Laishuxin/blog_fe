@@ -1,56 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>event proxy</title>
+    <style>
+      .list {
+        background: lightgoldenrodyellow;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>event proxy</title>
-  <style>
-    .list {
-      background: lightgoldenrodyellow;
-    }
+      .list li {
+        height: 50px;
+        margin: 30px 0;
+      }
 
-    .list li {
-      height: 50px;
-      margin: 30px 0;
-    }
+      .list li:nth-child(2n) {
+        background: lightgreen;
+      }
 
-    .list li:nth-child(2n) {
-      background: lightgreen;
-    }
+      .list li:nth-child(2n + 1) {
+        background: lightskyblue;
+      }
+    </style>
+  </head>
 
-    .list li:nth-child(2n + 1) {
-      background: lightskyblue;
-    }
-  </style>
-</head>
-
-<body>
-  <ul class="list">
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
-    <li>5</li>
-  </ul>
-  <!-- <script>
+  <body>
+    <ul class="list">
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+    </ul>
+    <!-- <script>
     const lis = document.querySelectorAll('li');
     
     for (let i = 0, len = lis.length; i < len; i++) {
       lis[i].addEventListener('click', function () { console.log(i); } )
     }
   </script> -->
-  <script>
-    const lis  = document.querySelectorAll('li');
-    const list = document.querySelector('.list');
-    
-    list.addEventListener('click', function (e) {
-      const target = e.target;
-      if (target.tagName.toLowerCase() !== 'li') { return; }
-      console.log(Array.prototype.indexOf.call(lis, target));
-    })
-  </script>
-</body>
+    <script>
+      const lis = document.querySelectorAll('li')
+      const list = document.querySelector('.list')
 
+      list.addEventListener('click', function (e) {
+        const target = e.target
+        if (target.tagName.toLowerCase() !== 'li') {
+          return
+        }
+        console.log(Array.prototype.indexOf.call(lis, target))
+      })
+    </script>
+  </body>
 </html>

@@ -24,7 +24,6 @@ sticky: false
 
 ![](./images/2021-06-14-19-57-02.png)
 
-
 ## BFC 规范
 
 > BFC 全称 block formatting context。BFC 规定了一个独立块的渲染区域，
@@ -33,6 +32,7 @@ sticky: false
 到容器外部的元素。
 
 常见的触发 BFC 的条件：
+
 1. `html` 根元素。
 2. 浮动元素。
 3. 绝对顶位的元素。(`position` 为 `absolute` 或 `fixed`)
@@ -47,11 +47,12 @@ sticky: false
 #### 保持原有的外边距
 
 考虑下面的例子：
+
 ```html
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=, initial-scale=1.0" />
   <title>bfc - application1</title>
   <style>
     .box1 {
@@ -60,7 +61,7 @@ sticky: false
       margin: 100px;
       background: lightgreen;
     }
-    
+
     .box2 {
       width: 200px;
       height: 200px;
@@ -74,13 +75,12 @@ sticky: false
   <div class="box1"></div>
   <div class="box2"></div>
 </body>
-
 ```
 
 我们为两个盒子设置外边距为 `100px`，但是从实际的作用结果上看，
 两个盒子之间的边距只有 `100px`，与我们预期的 `200px` 有点出入。
 这种现象称之为**外边距塌陷**。这种异常并不是 bug，而是一种规范。
-为了解决这种问题，我们只需要用到 BFC了。
+为了解决这种问题，我们只需要用到 BFC 了。
 
 ![](./images/2021-06-30-17-14-04.png)
 
@@ -89,10 +89,10 @@ sticky: false
 
 ```html
 <style>
-// ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
-.container {
-  overflow: hidden;
-}
+  // ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
+  .container {
+    overflow: hidden;
+  }
 </style>
 
 <body>
@@ -112,7 +112,6 @@ sticky: false
 #### 解决盒子塌陷
 
 ```html
-
 <style>
   .child {
     float: left;
@@ -142,15 +141,16 @@ sticky: false
 
 ```html
 <style>
-.parent {
-  display: flex;
-  border: 1px solid red;
-}
+  .parent {
+    display: flex;
+    border: 1px solid red;
+  }
 </style>
 ```
+
 ![](./images/2021-07-02-00-16-26.png)
 
-我们这里采用 `display: flex;`  来触发 BFC，从结果上看，父元素塌陷的
+我们这里采用 `display: flex;` 来触发 BFC，从结果上看，父元素塌陷的
 问题完美解决。
 
 #### 阻止元素被浮动元素覆盖
@@ -167,7 +167,7 @@ sticky: false
     width: 100px;
     height: 100px;
   }
-  
+
   .normal-box {
     width: 200px;
     height: 200px;
@@ -188,7 +188,7 @@ sticky: false
   width: 200px;
   height: 200px;
   background: lightgreen;
-  
+
   overflow: hidden;
 }
 ```

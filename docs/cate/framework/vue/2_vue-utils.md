@@ -15,18 +15,16 @@ sticky: false
 ## makeMap
 
 ```javascript
-export function makeMap (
+export function makeMap(
   str: string,
-  expectsLowerCase?: boolean
+  expectsLowerCase?: boolean,
 ): (key: string) => true | void {
   const map = Object.create(null)
   const list: Array<string> = str.split(',')
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true
   }
-  return expectsLowerCase
-    ? val => map[val.toLowerCase()]
-    : val => map[val]
+  return expectsLowerCase ? val => map[val.toLowerCase()] : val => map[val]
 }
 ```
 
@@ -36,6 +34,7 @@ makeMap 可以根据传入的字符串，缓存一个 map 并且返回一个函�
 该函数接收一个 `key`，判断该 `key` 是否在 map 中。
 
 例如源码中，用 `makeMap` 创建一个函数用于判断 `key` 是否为内置组件/保留的属性。
+
 ```javascript
 /**
  * Check if a tag is a built-in tag.
@@ -54,7 +53,7 @@ export const isReservedAttribute = makeMap('key,ref,slot,slot-scope,is')
 /**
  * Remove an item from an array
  */
-export function remove (arr: Array<any>, item: any): Array<any> | void {
+export function remove(arr: Array<any>, item: any): Array<any> | void {
   if (arr.length) {
     const index = arr.indexOf(item)
     if (index > -1) {
@@ -72,18 +71,18 @@ export function remove (arr: Array<any>, item: any): Array<any> | void {
 /**
  * Create a cached version of a pure function.
  */
-export function cached<F: Function> (fn: F): F {
+export function cached<F: Function>(fn: F): F {
   const cache = Object.create(null)
-  return (function cachedFn (str: string) {
+  return (function cachedFn(str: string) {
     const hit = cache[str]
     return hit || (cache[str] = fn(str))
   }: any)
 }
 ```
+
 实现纯函数的缓存。
 
 参考 `cached` 可以写出对于任意参数的 cache 函数。
-
 
 ## 命名管理函数
 
@@ -93,7 +92,7 @@ export function cached<F: Function> (fn: F): F {
  */
 const camelizeRE = /-(\w)/g
 export const camelize = cached((str: string): string => {
-  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : '')
+  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
 })
 
 /**

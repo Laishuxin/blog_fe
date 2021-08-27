@@ -8,14 +8,19 @@ const data = [
   { src: '', name: 'pic6' },
   { src: 'images/6.png', name: 'pic6' },
   { src: 'images/7.png', name: 'pic7' },
-  { src: 'images/8.png', name: 'pic8' }
+  { src: 'images/8.png', name: 'pic8' },
 ]
 
 const length = data.length
-const imgPromiseList = loadImages(data.map((item) => item.src))
+const imgPromiseList = loadImages(data.map(item => item.src))
 const images = ensureOrder(imgPromiseList)
-  .then((images) => addChildren(images.filter(item => item !== null), container))
-  .catch((e) => console.log(e))
+  .then(images =>
+    addChildren(
+      images.filter(item => item !== null),
+      container,
+    ),
+  )
+  .catch(e => console.log(e))
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {
@@ -31,7 +36,7 @@ function loadImage(src) {
 }
 
 function loadImages(imgUrlList) {
-  return imgUrlList.map((item) => {
+  return imgUrlList.map(item => {
     return loadImage(item)
   })
 }
@@ -43,19 +48,19 @@ function addChildren(children, parent) {
 }
 
 function ensureOrder(promises) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const length = promises.length
     let count = 0
     const list = Array(length)
     promises.forEach((promise, index) => {
       // debugger
       promise
-        .then((value) => {
+        .then(value => {
           console.log(count, value)
           list[index] = value
           ++count === length && resolve(list)
         })
-        .catch((_) => {
+        .catch(_ => {
           list[index] = null
           ++count === length && resolve(list)
         })

@@ -8,7 +8,7 @@ export default class Parent extends Component {
   }
 
   state = {
-    count: 0
+    count: 0,
   }
 
   setCount = () => {

@@ -39,10 +39,10 @@ export default {
   }
 ```
 
-1. target。指向我们要发送的目标服务器的url。
-2. changeOrigin。是否改变源。例如我们当前在`http://localhost:3000`，我们配置的target为`http://localhost:5000`如果 changeOrigin 为 false时，服务器接收到的请求中 origin 将为 `http://localhost:3000`。如果 changeOrigin 为 true 时，则服务器接收到的请求中，origin 将为 `http://localhost:5000`，也就是我们的target。
+1. target。指向我们要发送的目标服务器的 url。
+2. changeOrigin。是否改变源。例如我们当前在`http://localhost:3000`，我们配置的 target 为`http://localhost:5000`如果 changeOrigin 为 false 时，服务器接收到的请求中 origin 将为 `http://localhost:3000`。如果 changeOrigin 为 true 时，则服务器接收到的请求中，origin 将为 `http://localhost:5000`，也就是我们的 target。
 3. rewrite。重写请求的 url。
 
-
 ## 重新设置请求的 url
-由于设置了代理，所以我们需要修改我们请求的url，指向代理服务器的url，也就是 `http://localhost:3000`。
+
+由于设置了代理，所以我们需要修改我们请求的 url，指向代理服务器的 url，也就是 `http://localhost:3000`。

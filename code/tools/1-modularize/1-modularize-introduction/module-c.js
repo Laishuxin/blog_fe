@@ -1,1 +1,1 @@
-var c = a.map(item => item * item);
+var c = a.map(item => item * item)

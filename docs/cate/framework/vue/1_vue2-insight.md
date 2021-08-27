@@ -108,7 +108,7 @@ function defineReactive(/* ... */) {
       childOb = !shallow && observe(newVal)
       // ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
       dep.notify()
-    }
+    },
   })
 }
 ```
@@ -310,7 +310,7 @@ const compiler = require('vue-template-compiler')
 
 let r1 = compiler.compile('<div @click="fn()"></div>')
 let r2 = compiler.compile(
-  '<my-component @click="fn()" @click.native="fn()"></my-component>'
+  '<my-component @click="fn()" @click.native="fn()"></my-component>',
 )
 
 console.log(r1.render)
@@ -327,7 +327,7 @@ v-model 对于组件默认情况下就是 `value` 和 `input` 的语法糖。
 来看源码的实现：
 
 ```javascript
-function transformModel (options, data: any) {
+function transformModel(options, data: any) {
   const prop = (options.model && options.model.prop) || 'value'
   const event = (options.model && options.model.event) || 'input'
   ;(data.attrs || (data.attrs = {}))[prop] = data.model.value
@@ -349,28 +349,29 @@ function transformModel (options, data: any) {
 ```
 
 通过上面的源码，我们也可以自定义组件的 `v-model`。
+
 ```javascript
-Vue.component('el-checkbox',{
-  template:`<input type="checkbox" :checked="check"
+Vue.component('el-checkbox', {
+  template: `<input type="checkbox" :checked="check"
 @change="$emit('change',$event.target.checked)">`,
-  model:{
-    prop:'check', // 更改默认的 value 的名字
-    event:'change' // 更改默认的方法名
- },
-  props: {
-    check: Boolean
- },
+  model: {
+    prop: 'check', // 更改默认的 value 的名字
+    event: 'change', // 更改默认的方法名
+  },
+  props: {
+    check: Boolean,
+  },
 })
 ```
 
-对于原生 DOM 元素，vue 在编译时会根据不同的标签和 type 
+对于原生 DOM 元素，vue 在编译时会根据不同的标签和 type
 指定 value 和 event。
 
 ```javascript
-export default function model (
+export default function model(
   el: ASTElement,
   dir: ASTDirective,
-  _warn: Function
+  _warn: Function,
 ): ?boolean {
   // statement...
   if (el.component) {
@@ -396,12 +397,13 @@ export default function model (
   return true
 }
 ```
+
 ### 跨组件通信
 
 1. 通过 Event Bus 实现。其核心原理还是 `vue` 实例上的 `$emit` 和
-  `$on`，通过 `$emit` 派发全局事件，通过 `$on` 监听全局事件。
+   `$on`，通过 `$emit` 派发全局事件，通过 `$on` 监听全局事件。
    ```javascript
-   Vue.prototype.$bus = new Vue();
+   Vue.prototype.$bus = new Vue()
    ```
 2. 使用 `vuex` 实现状态管理。
 
@@ -429,6 +431,7 @@ export default function model (
 ### 父传子
 
 1. 通过 `props` 向子组件传递数据。
+
 ```vue
 // parent.vue
 <template>
@@ -463,6 +466,7 @@ export default {
   },
 }
 ```
+
 2. 父组件通过 `$children` 的方式获取子组件。
 3. 父组件通过 `ref` 的方式获取子组件。
 4. 父组件通过 `provide` 向子组件传送数据，子组件通过 `inject` 获取父组件传送过来的数据。
@@ -494,15 +498,11 @@ export default {
 }
 </script>
 
-// ------------------------
-// parent.vue
+// ------------------------ // parent.vue
 <template>
   <div class="parent">
     <h1>parent component</h1>
-    <child 
-      @sendMessageToParent="onReceiveMessage"
-      ref="child-ref"
-    />
+    <child @sendMessageToParent="onReceiveMessage" ref="child-ref" />
   </div>
 </template>
 
@@ -515,14 +515,14 @@ export default {
   methods: {
     onReceiveMessage(msg) {
       console.log('receive message from child: ', msg)
-    }
+    },
   },
   mounted() {
     const child = this.$refs['child-ref']
-    child.$on('sendMessageToParent', (msg) => {
+    child.$on('sendMessageToParent', msg => {
       console.log('receive message from child: ', msg)
     })
-  }
+  },
 }
 </script>
 ```
@@ -539,7 +539,7 @@ export default {
 `Vue.mixin()` 实现方式特别简单，就是通过调用其 `mergeOptions` 方法。
 
 ```javascript
-export function initMixin (Vue: GlobalAPI) {
+export function initMixin(Vue: GlobalAPI) {
   Vue.mixin = function (mixin: Object) {
     this.options = mergeOptions(this.options, mixin)
     return this
@@ -548,9 +548,10 @@ export function initMixin (Vue: GlobalAPI) {
 ```
 
 合并的大概原理如下：
+
 ```javascript
 Vue.mixin({
-  beforeCreate() {}
+  beforeCreate() {},
 })
 ```
 
@@ -558,28 +559,25 @@ vue 会将 `mixin` 中的 hook 存入到一个队列中（头插）
 ，然后在 `callHook` 的时候会遍历队列，依次取出 `hook` 并执行。
 
 ```javascript
-
 /**
  * Hooks and props are merged as arrays.
  */
-function mergeHook (
+function mergeHook(
   parentVal: ?Array<Function>,
-  childVal: ?Function | ?Array<Function>
+  childVal: ?Function | ?Array<Function>,
 ): ?Array<Function> {
   const res = childVal
     ? parentVal
       ? parentVal.concat(childVal)
       : Array.isArray(childVal)
-        ? childVal
-        : [childVal]
+      ? childVal
+      : [childVal]
     : parentVal
-  return res
-    ? dedupeHooks(res)
-    : res
+  return res ? dedupeHooks(res) : res
 }
 ```
 
-核心逻辑是 `parentVal.concat(childVAl)`，采用 `concat` 
+核心逻辑是 `parentVal.concat(childVAl)`，采用 `concat`
 实现头插合并。
 
 对于其他数据的合并，vue 会根据不同的字段采用不同的合并
@@ -595,13 +593,13 @@ function mergeHook (
 
 ### 何为插槽
 
-
 ## 浅谈 keep-alive
 
 `keep-alive` 可以用于实现组件的缓存，使组件在切换的时候不会
 立即被销毁。
 
 常用的属性有：
+
 - `include`: 决定哪些组件可以缓存。
 - `exclude`：决定哪些组件不被缓存。
 - `max`：最大的缓存数量。
@@ -616,10 +614,12 @@ function mergeHook (
 
 为了避免将所有匹配到的路径缓存，可以使用 `keep-alive` 的参数，
 或者可以通过 `router.meta` 来决定释放缓存，详情可以参考
-[vue-router 之 keep-alive路由缓存处理include+exclude](https://www.cnblogs.com/fightjianxian/p/12070982.html)。
+[vue-router 之 keep-alive 路由缓存处理 include+exclude](https://www.cnblogs.com/fightjianxian/p/12070982.html)。
 
 ## Vue 中常见的性能优化
+
 ### 编码优化
+
 1. 不要将所有的数据都存放在 `data` 中，这会造成增加过多的
    `getter` 和 `setter`，而且会采用过多的 `watcher` 去
    收集依赖，从而影响性能。
@@ -635,6 +635,7 @@ function mergeHook (
 9. 拆分 vue 组件，提高代码的复用性。
 
 ### 加载性能优化
+
 - 第三方模块按需导入 ( babel-plugin-component )
 - 滚动到可视区域动态加载 ( https://tangbc.github.io/vue-virtual-scroll-list )
 - 图片懒加载 (https://github.com/hilongjw/vue-lazyload.git)
@@ -655,6 +656,6 @@ function mergeHook (
 
 ## Reference
 
-- [vue-router 之 keep-alive路由缓存处理include+exclude](https://www.cnblogs.com/fightjianxian/p/12070982.html)
-- [谈谈App Shell与Skeleton Screen实现](https://zhuanlan.zhihu.com/p/41605338)
+- [vue-router 之 keep-alive 路由缓存处理 include+exclude](https://www.cnblogs.com/fightjianxian/p/12070982.html)
+- [谈谈 App Shell 与 Skeleton Screen 实现](https://zhuanlan.zhihu.com/p/41605338)
 - [块格式化上下文](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)

@@ -108,7 +108,7 @@ const UseStateExample1 = () => {
     <div>
       <h2>useState</h2>
       <p>count: {count}</p>
-      <button onClick={() => setCount((count) => count + 1)}>increment</button>
+      <button onClick={() => setCount(count => count + 1)}>increment</button>
     </div>
   )
 }
@@ -148,7 +148,7 @@ use 开头进行命名。）
 class Example extends React.Component {
   state = {
     count1: 0,
-    count2: 0
+    count2: 0,
   }
 
   setCount1 = () => this.setState({ count1: this.state.count1 + 1 })
@@ -168,10 +168,10 @@ export const UseStateExample3 = () => {
       <h2>useState</h2>
       <p>count1: {count1}</p>
       <p>count2: {count2}</p>
-      <button onClick={() => setCount1((count1) => count1 + 1)}>
+      <button onClick={() => setCount1(count1 => count1 + 1)}>
         increment count1
       </button>
-      <button onClick={() => setCount2((count2) => count2 + 1)}>
+      <button onClick={() => setCount2(count2 => count2 + 1)}>
         increment count2
       </button>
     </div>
@@ -200,7 +200,7 @@ export const UseEffectExample1 = () => {
   return (
     <div>
       <p>count: {count}</p>
-      <button onClick={() => setCount((count) => count + 1)}>increment</button>
+      <button onClick={() => setCount(count => count + 1)}>increment</button>
     </div>
   )
 }
@@ -226,9 +226,9 @@ export const UseEffectExample2 = () => {
   return (
     <div>
       <p>count: {count}</p>
-      <button onClick={() => setCount((count) => count + 1)}>increment</button>
+      <button onClick={() => setCount(count => count + 1)}>increment</button>
       <p>other: {other}</p>
-      <button onClick={() => setOther((other) => other + 1)}>update</button>
+      <button onClick={() => setOther(other => other + 1)}>update</button>
     </div>
   )
 }
@@ -247,7 +247,7 @@ export const UseEffectExample3 = () => {
   return (
     <div>
       <p>count: {count}</p>
-      <button onClick={() => setCount((count) => count + 1)}>increment</button>
+      <button onClick={() => setCount(count => count + 1)}>increment</button>
     </div>
   )
 }
@@ -291,17 +291,17 @@ React 创建和使用 context 是比较麻烦的，很容易就出现多层嵌�
 const themes = {
   light: {
     foreground: '#000',
-    background: '#eee'
+    background: '#eee',
   },
   dark: {
     foreground: '#fff',
-    background: '#222'
-  }
+    background: '#222',
+  },
 }
 
 const ThemeContext = createContext({
   theme: themes.light,
-  toggle: () => {}
+  toggle: () => {},
 })
 ```
 
@@ -325,14 +325,14 @@ const UseContextExample1 = () => {
       value={{
         theme,
         toggle: () => {
-          setTheme((theme) => {
+          setTheme(theme => {
             return theme === themes.light ? themes.dark : themes.light
           })
-        }
+        },
       }}
     >
       <div
-        className="container"
+        className='container'
         style={{ background: theme.background, color: theme.foreground }}
       >
         <span>container</span>
@@ -371,7 +371,7 @@ interface IAction {
 }
 
 const initialState = {
-  count: 0
+  count: 0,
 }
 
 const reducer = (state: IState, action: IAction) => {
@@ -399,9 +399,9 @@ const UseReducerExample1 = () => {
   return (
     <div>
       <input
-        type="number"
+        type='number'
         value={inputValue}
-        onChange={(e) => {
+        onChange={e => {
           setInputValue(parseFloat(e.target.value || '0'))
         }}
       />
@@ -431,7 +431,7 @@ const useCounter = () => {
     count,
     inputValue,
     setInputValue,
-    dispatch
+    dispatch,
   }
 }
 
@@ -445,9 +445,9 @@ const UseReducerExample2 = () => {
   return (
     <div>
       <input
-        type="number"
+        type='number'
         value={inputValue}
-        onChange={(e) => {
+        onChange={e => {
           setInputValue(e.target.value)
         }}
       />
@@ -478,7 +478,7 @@ const UseRefExample1 = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   return (
     <div>
-      <input type="text" ref={inputRef} />
+      <input type='text' ref={inputRef} />
       <button
         onClick={() => {
           inputRef.current!.focus()
@@ -507,7 +507,7 @@ const UseRefExample2 = () => {
   return (
     <div>
       <p>count: {count} </p>
-      <button onClick={() => setCount((count) => count + 1)}>+</button>
+      <button onClick={() => setCount(count => count + 1)}>+</button>
     </div>
   )
 }
@@ -533,7 +533,7 @@ const UseRefExample2 = () => {
       <p>count: {count} </p>
       <button
         onClick={() => {
-          setCount((count) => {
+          setCount(count => {
             const result = count + 1
             countRef.current = result
             return result
@@ -569,7 +569,7 @@ const set = new Set()
 const UseCallbackExample1 = () => {
   const [count, setCount] = useState(1)
   const handleClick = () => {
-    setCount((count) => count + 1)
+    setCount(count => count + 1)
   }
   set.add(handleClick)
 
@@ -595,7 +595,7 @@ const UseCallbackExample2 = () => {
   //   setCount((count) => count + 1)
   // }
   const handleClick = useCallback(() => {
-    setCount((count) => count + 1)
+    setCount(count => count + 1)
   }, [setCount])
   set.add(handleClick)
 
@@ -630,8 +630,8 @@ const UseMemoExample1 = () => {
       <p>count: {count1} </p>
       <p>count: {count2} </p>
       <p>last count1 modified timestamp: {date}</p>
-      <button onClick={() => setCount1((count) => count + 1)}>count1++</button>
-      <button onClick={() => setCount2((count) => count + 1)}>count2++</button>
+      <button onClick={() => setCount1(count => count + 1)}>count1++</button>
+      <button onClick={() => setCount2(count => count + 1)}>count2++</button>
     </div>
   )
 }
@@ -651,6 +651,7 @@ const UseMemoExample1 = () => {
 1. 使用 `useMemo` 避免重绘问题。
 2. 注意 hooks 同步问题。
 3. 使用自定义的 hook 封装行为。
+
 ```tsx
 const Tip1 = () => {
   const [count, setCount] = useState(0)
@@ -669,11 +670,12 @@ const Tip1 = () => {
   return (
     <div>
       <p>count: {count}</p>
-      <button onClick={() => setCount((count) => count + 1)}>+</button>
+      <button onClick={() => setCount(count => count + 1)}>+</button>
     </div>
   )
 }
 ```
+
 4. 每种行为都应该有各自的 hook。
 5. 不要思考生命周期。
 

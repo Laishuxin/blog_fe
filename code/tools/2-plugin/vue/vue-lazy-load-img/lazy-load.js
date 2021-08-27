@@ -42,8 +42,8 @@ function getIntersectionObserver() {
     return null
   }
 
-  return new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
+  return new IntersectionObserver(entries => {
+    entries.forEach(entry => {
       if (entry.isIntersecting) {
         const lazyImage = entry.target
         lazyImage.classList.add(CLASS_V_LOADING)

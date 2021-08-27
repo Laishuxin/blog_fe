@@ -1,6 +1,6 @@
-import { a } from './module-a.js';
-var c = a.map(function (item) { return item * item; })
+import { a } from './module-a.js'
+var c = a.map(function (item) {
+  return item * item
+})
 
-export {
-  c
-}
+export { c }

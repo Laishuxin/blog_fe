@@ -21,6 +21,7 @@ sticky: false
    从触发事件的底层元素开始触发，然后逐渐向上层元素开始冒泡。
 
 ![ 事件捕获和事件冒泡 - MDN ](https://mdn.mozillademos.org/files/14075/bubbling-capturing.png)
+
 <center>图片来自 MDN</center>
 
 ### 事件传播
@@ -37,19 +38,22 @@ sticky: false
 于是乎，我们可以之间在父元素上对点击事件进行处理，从而在子元素上响应。
 
 考虑下面的代码：
+
 ```html
 <ul class="list">
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
-    <li>5</li>
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li>
+  <li>5</li>
 </ul>
 <script>
-  const lis = document.querySelectorAll('li');
-  
+  const lis = document.querySelectorAll('li')
+
   for (let i = 0, len = lis.length; i < len; i++) {
-    lis[i].addEventListener('click', function () { console.log(i); } )
+    lis[i].addEventListener('click', function () {
+      console.log(i)
+    })
   }
 </script>
 ```
@@ -60,13 +64,15 @@ sticky: false
 
 ```html
 <script>
-  const lis  = document.querySelectorAll('li');
-  const list = document.querySelector('.list');
-  
+  const lis = document.querySelectorAll('li')
+  const list = document.querySelector('.list')
+
   list.addEventListener('click', function (e) {
-    const target = e.target;
-    if (target.tagName.toLowerCase() !== 'li') { return; }
-    console.log(Array.prototype.indexOf.call(lis, target));
+    const target = e.target
+    if (target.tagName.toLowerCase() !== 'li') {
+      return
+    }
+    console.log(Array.prototype.indexOf.call(lis, target))
   })
 </script>
 ```
@@ -77,12 +83,17 @@ case1: 提供一个全局的 `isBanning` 标志，当这个标志位为 `true` �
 用户所有的点击事件都不起作用。
 
 ```javascript
-window.addEventListener('click', function (e) {
-  if (isBanning) { e.stopPropagation() };
-  console.log('window is clicking...');
-}, true);
+window.addEventListener(
+  'click',
+  function (e) {
+    if (isBanning) {
+      e.stopPropagation()
+    }
+    console.log('window is clicking...')
+  },
+  true,
+)
 ```
 
 其中需要注意的点就是我们使用了**事件捕获**和 `e.stopPropagation` 才能实现事件
 代理和阻止事件传播。
-

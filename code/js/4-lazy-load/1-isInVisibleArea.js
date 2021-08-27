@@ -5,8 +5,8 @@
  * @returns { boolean } true 如果 el 在可视区范围，否则 false
  */
 export function isInVisibleArea(el, parent) {
-  const cHeight = parent.clientHeight;
-  const sTop = parent.scrollTop;
-  const oTop = el.offsetTop;
-  return oTop < cHeight + sTop;
+  const cHeight = parent.clientHeight
+  const sTop = parent.scrollTop
+  const oTop = el.offsetTop
+  return oTop < cHeight + sTop
 }

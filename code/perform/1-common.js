@@ -9,25 +9,28 @@
 function checkWebp() {
   try {
     // "data:image/webp;base64,Uxxx"
-    return document.createElement('canvas')
-            .toDataURL('image/webp')
-            .indexOf('data:image/webp');
+    return document
+      .createElement('canvas')
+      .toDataURL('image/webp')
+      .indexOf('data:image/webp')
   } catch (e) {
-    return false;
+    return false
   }
 }
 
-const isSupportWebp = checkWebp();
+const isSupportWebp = checkWebp()
 
 /**
  * Transform url to support webp.
- * @param { string } url 
+ * @param { string } url
  * @returns { string } transformed url.
  */
 function transformUrl(url) {
   if (!url) {
     throw new Error(`${url} is invalid.`)
   }
-  if (isSupportWebp) { return `${url}?xxxx` }
-  return url;
+  if (isSupportWebp) {
+    return `${url}?xxxx`
+  }
+  return url
 }

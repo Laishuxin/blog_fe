@@ -3,7 +3,7 @@ import Parent from './Parent'
 
 export default class App extends Component {
   state = {
-    isShow: true
+    isShow: true,
   }
 
   setIsShow = () => {

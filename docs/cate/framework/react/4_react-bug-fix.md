@@ -45,7 +45,7 @@ const User = () => {
       // If the component unmounts faster than 3s
       setUser({
         id: 1,
-        name: 'John'
+        name: 'John',
       })
     }, 3000)
   }, [])
@@ -76,16 +76,16 @@ const CanNotPerformExample1 = () => {
 export const CanNotPerformExample = () => {
   return (
     <div>
-      <div className="desc">
+      <div className='desc'>
         <h1>can not perform</h1>
         <p style={{ color: 'red' }}>
-          Warning: Can’t perform a React state update on an unmounted component.
-          This is a no-op, but it indicates a memory leak in your application.
-          To fix, cancel all subscriptions and asynchronous tasks in a useEffect
-          cleanup function.
+          Warning: Can’t perform a React state update on an unmounted
+          component. This is a no-op, but it indicates a memory leak in your
+          application. To fix, cancel all subscriptions and asynchronous tasks
+          in a useEffect cleanup function.
         </p>
       </div>
-      <div className="examples">
+      <div className='examples'>
         <CanNotPerformExample1 />
       </div>
     </div>
@@ -140,7 +140,7 @@ useEffect(() => {
     if (isMounted) {
       setUser({
         id: 1,
-        name: 'John'
+        name: 'John',
       })
     }
   }, 3000)
@@ -164,31 +164,31 @@ export interface IState<D> {
 const defaultState: IState<null> = {
   stat: 'idle',
   data: null,
-  error: null
+  error: null,
 }
 
 const defaultConfig = {
-  throwOnError: false
+  throwOnError: false,
 }
 
 const useAsync = <D>(
   initialState?: IState<D>,
-  initialConfig?: typeof defaultConfig
+  initialConfig?: typeof defaultConfig,
 ) => {
   initialConfig = {
     ...defaultConfig,
-    ...initialConfig
+    ...initialConfig,
   }
   const [state, setState] = useState<IState<D>>({
     ...defaultState,
-    ...initialState
+    ...initialState,
   })
 
   const setError = (error: Error) => {
     setState({
       data: null,
       stat: 'error',
-      error
+      error,
     })
   }
 
@@ -196,7 +196,7 @@ const useAsync = <D>(
     setState({
       data,
       error: null,
-      stat: 'success'
+      stat: 'success',
     })
     // return data
   }
@@ -207,11 +207,11 @@ const useAsync = <D>(
     }
     setState({ ...state, stat: 'loading' })
     return promise
-      .then((data) => {
+      .then(data => {
         setData(data)
         return data
       })
-      .catch((e) => {
+      .catch(e => {
         setError(e)
         return initialConfig!.throwOnError ? Promise.reject(e) : e
         // return Promise.reject(e)
@@ -226,7 +226,7 @@ const useAsync = <D>(
     setData,
     setError,
     run,
-    ...state
+    ...state,
   }
 }
 
@@ -245,7 +245,7 @@ export default useAsync
 ```tsx
 const useAsync = <D>(
   initialState?: IState<D>,
-  initialConfig?: typeof defaultConfig
+  initialConfig?: typeof defaultConfig,
 ) => {
   // statements...
   const isMounted = useRef(true)
@@ -262,11 +262,11 @@ const useAsync = <D>(
     }
     setState({ ...state, stat: 'loading' })
     return promise
-      .then((data) => {
+      .then(data => {
         setData(data)
         return data
       })
-      .catch((e) => {
+      .catch(e => {
         setError(e)
         return initialConfig!.throwOnError ? Promise.reject(e) : e
         // return Promise.reject(e)

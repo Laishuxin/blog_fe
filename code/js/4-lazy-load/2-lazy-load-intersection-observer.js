@@ -6,7 +6,7 @@ const data = [
   { src: 'images/5.png', name: 'pic5' },
   { src: 'images/6.png', name: 'pic6' },
   { src: 'images/7.png', name: 'pic7' },
-  { src: 'images/8.png', name: 'pic8' }
+  { src: 'images/8.png', name: 'pic8' },
 ]
 
 const template = document.getElementsByTagName('template')[0].innerHTML
@@ -17,8 +17,8 @@ const images = container.querySelectorAll('img')
 
 let count = 0
 const length = images.length
-const io = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
     const target = entry.target
     if (entry.intersectionRatio > 0) {
       target.src = target.getAttribute('data-src')
@@ -31,18 +31,18 @@ const io = new IntersectionObserver((entries) => {
   })
 })
 
-images.forEach((item) => {
+images.forEach(item => {
   io.observe(item)
 })
 
 function render(data, template) {
   let imgStr
   const imgStrArr = []
-  data.forEach((item) => {
+  data.forEach(item => {
     imgStr = template.replace(/{{(.*?)}}/g, function (_, key) {
       return {
         src: item['src'],
-        name: item['name']
+        name: item['name'],
       }[key]
     })
     imgStrArr.push(imgStr)

@@ -8,12 +8,12 @@ const data = [
   { src: '', name: 'pic6' }, // 测试异常图片
   { src: 'images/6.png', name: 'pic6' },
   { src: 'images/7.png', name: 'pic7' },
-  { src: 'images/8.png', name: 'pic8' }
+  { src: 'images/8.png', name: 'pic8' },
 ]
 
 const length = data.length
-const imgList = mapImage(data.map((item) => item.src)).then((imageList) =>
-  addChildren(imageList, container)
+const imgList = mapImage(data.map(item => item.src)).then(imageList =>
+  addChildren(imageList, container),
 )
 
 function loadImage(src) {
@@ -30,19 +30,19 @@ function loadImage(src) {
 }
 
 function mapImage(images) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const list = []
     const length = images.length
     let count = 0
     for (let i = 0; i < length; i++) {
       const image = images[i]
       loadImage(image)
-        .then((img) => {
+        .then(img => {
           list.push(img)
           count++
           if (count === length) resolve(list)
         })
-        .catch((_) => {
+        .catch(_ => {
           count++
           if (count === length) resolve(list)
         })

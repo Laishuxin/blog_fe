@@ -5,7 +5,7 @@ export default class Counter2 extends Component {
     super(props)
     console.log('counter2: constructing...')
     this.state = {
-      count: 0
+      count: 0,
     }
   }
 

@@ -7,7 +7,7 @@ export default class Child extends PureComponent {
   }
 
   state = {
-    count: 0
+    count: 0,
   }
 
   setCount = () => {

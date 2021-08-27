@@ -112,30 +112,30 @@ sticky: false
 ### 使用 js 实现
 
 ```js
-const parent = document.querySelector('.parent');
+const parent = document.querySelector('.parent')
 const box = document.querySelector('.box')
-const unit = 'px';
-setCentering(parent, box);
+const unit = 'px'
+setCentering(parent, box)
 
 function setCentering(parent, child) {
-   setPosition(parent, child);
-   const [ pWidth, pHeight ] = getClientSize(parent);
-   const [ cWidth, cHeight ] = getOffsetSize(child);
+  setPosition(parent, child)
+  const [pWidth, pHeight] = getClientSize(parent)
+  const [cWidth, cHeight] = getOffsetSize(child)
 
-   child.style.left = (pWidth - cWidth) / 2 + unit;
-   child.style.top  = (pHeigh - cHeight) / 2 + unit;
+  child.style.left = (pWidth - cWidth) / 2 + unit
+  child.style.top = (pHeigh - cHeight) / 2 + unit
 }
 
 function setPosition(parent, child) {
-   parent.style.position = 'relative';
-   child.style.position = 'absolute';
+  parent.style.position = 'relative'
+  child.style.position = 'absolute'
 }
 
 function getClientSize(element) {
-   return [ element.clientWidth, element.clientHeight ];
+  return [element.clientWidth, element.clientHeight]
 }
 
 function getOffsetSize(element) {
-  return [ element.offsetWidth, element.offsetHeight ];
+  return [element.offsetWidth, element.offsetHeight]
 }
 ```

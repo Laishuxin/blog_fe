@@ -1,7 +1,7 @@
 const nav = [
   {
     text: '首页',
-    link: '/'
+    link: '/',
   },
   {
     text: '分类',
@@ -9,16 +9,16 @@ const nav = [
   },
   {
     text: '标签',
-    link: '/tag/'
+    link: '/tag/',
   },
   {
     text: '归档',
-    link: '/timeline/'
+    link: '/timeline/',
   },
   {
     text: '关于',
-    link: '/about/'
-  }
+    link: '/about/',
+  },
 ]
 
 module.exports = nav

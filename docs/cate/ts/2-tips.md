@@ -15,12 +15,13 @@ sticky: false
 
 ```typescript
 interface Person {
-  name: string;
-  age : number;
+  name: string
+  age: number
 }
 
 type OptionsOfPerson = {
-  [ prop in keyof Person]: boolean
+  [prop in keyof Person]: boolean
 }
 ```
+
 ![](./images/2021-06-28-22-52-21.png)

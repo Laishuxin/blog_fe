@@ -1,60 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>实现用户的点击时间</title>
-  <style>
-    .list {
-      background: lightgoldenrodyellow;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>实现用户的点击时间</title>
+    <style>
+      .list {
+        background: lightgoldenrodyellow;
+      }
 
-    .list li {
-      height: 50px;
-      margin: 30px 0;
-    }
+      .list li {
+        height: 50px;
+        margin: 30px 0;
+      }
 
-    .list li:nth-child(2n) {
-      background: lightgreen;
-    }
+      .list li:nth-child(2n) {
+        background: lightgreen;
+      }
 
-    .list li:nth-child(2n + 1) {
-      background: lightskyblue;
-    }
-  </style>
-</head>
-<body>
-  <button>isBanning</button>
-  <p>isBanning = <span class="banned">false</span></p>
-  <ul class="list">
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
-    <li>5</li>
-    <li>6</li>
-    <li>7</li>
-    <li>8</li>
-    <li>9</li>
-    <li>10</li>
-  </ul>
-  <script>
-    var   isBanning = false;
-    const list      = document.querySelector('.list');
-    const btn       = document.querySelector('button');
-    const banned    = document.querySelector('.banned');
+      .list li:nth-child(2n + 1) {
+        background: lightskyblue;
+      }
+    </style>
+  </head>
+  <body>
+    <button>isBanning</button>
+    <p>isBanning = <span class="banned">false</span></p>
+    <ul class="list">
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>9</li>
+      <li>10</li>
+    </ul>
+    <script>
+      var isBanning = false
+      const list = document.querySelector('.list')
+      const btn = document.querySelector('button')
+      const banned = document.querySelector('.banned')
 
-    list.addEventListener('click', function () { alert('clicking...'); })
-    btn.addEventListener('click', function () {
-      isBanning = !isBanning; 
-      banned.innerHTML = isBanning;
-    })
+      list.addEventListener('click', function () {
+        alert('clicking...')
+      })
+      btn.addEventListener('click', function () {
+        isBanning = !isBanning
+        banned.innerHTML = isBanning
+      })
 
-    window.addEventListener('click', function (e) {
-      if (isBanning) { e.stopPropagation() };
-      console.log('window is clicking...');
-    }, true);
-  </script>
-</body>
+      window.addEventListener(
+        'click',
+        function (e) {
+          if (isBanning) {
+            e.stopPropagation()
+          }
+          console.log('window is clicking...')
+        },
+        true,
+      )
+    </script>
+  </body>
 </html>

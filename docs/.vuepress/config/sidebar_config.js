@@ -3,7 +3,7 @@ const { resolve } = require('path')
 const basePath = resolve(__dirname, '../../')
 
 const cate = ['html', 'css', 'js', 'ts', 'perform', 'framework', 'tools']
-const getSidebarName = (name) => `/cate/${name}/`
+const getSidebarName = name => `/cate/${name}/`
 
 const sidebar = {
   [getSidebarName('tools')]: getTools(
@@ -11,7 +11,7 @@ const sidebar = {
     '插件',
     '构建工具',
     'mock',
-    'http'
+    'http',
   ),
   [getSidebarName('html')]: getHtml('interview', '基础'),
   [getSidebarName('js')]: getJs(),
@@ -20,16 +20,16 @@ const sidebar = {
   [`${getSidebarName('framework')}react/`]: getFrameworkByName('react'),
   [getSidebarName('framework')]: getFramework(),
   [getSidebarName('ts')]: getTs(),
-  '/cate': cate
+  '/cate': cate,
 }
 
 function getGroups(path, groups) {
   const group = getFileNamesByGroups(path, groups)
-  return groups.map((item) => {
+  return groups.map(item => {
     return {
       title: item,
       collapsable: false,
-      children: group[item]
+      children: group[item],
     }
   })
 }

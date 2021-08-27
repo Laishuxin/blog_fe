@@ -5,7 +5,7 @@ export default class Counter1 extends Component {
     super(props)
     console.log('counter1: constructing...')
     this.state = {
-      count: 0
+      count: 0,
     }
   }
 
@@ -16,7 +16,7 @@ export default class Counter1 extends Component {
   componentDidMount() {
     console.log('counter1: did mounted...')
   }
-  
+
   componentDidUpdate() {
     console.log('counter1: did updated')
   }
@@ -24,7 +24,7 @@ export default class Counter1 extends Component {
   componentWillUnmount() {
     console.log('counter1: will unmount')
   }
-  
+
   render() {
     console.log('counter1: rendering...')
     return (

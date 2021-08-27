@@ -47,7 +47,7 @@ export default function use(app) {
     },
     unmounted(el) {
       unobserve(el)
-    }
+    },
   })
 }
 ```
@@ -94,8 +94,8 @@ import { V_LAZY_ERROR, V_LAZY_LOADED, V_LAZY_LOADING } from './constant'
 const io = getIntersectionObserver()
 
 function getIntersectionObserver() {
-  return new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
+  return new IntersectionObserver(entries => {
+    entries.forEach(entry => {
       if (entry.isIntersecting) {
         const target = entry.target
         const src = target.getAttribute('src')
