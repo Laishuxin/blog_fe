@@ -6,12 +6,35 @@
     "moment": "^2.29.1",
     "vuepress": "^1.8.2",
     "vuepress-plugin-smooth-scroll": "^0.0.10",
-    "vuepress-theme-hope": "^1.13.4"
+    "vuepress-theme-hope": "^1.13.4",
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
+    "eslint-config-prettier": "^6.15.0",
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "msw": "^0.28.1",
+    "prettier": "2.3.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "prettier"
+    ]
   },
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "dev": "yarn docs:dev",
-    "deploy": "bash deploy.sh"
+    "deploy": "bash deploy.sh",
+    "prepare": "husky install",
+    "format": "yarn prettier --write ."
+  },
+  "lint-staged": {
+    "*.{js,css,md,ts,tsx}": "prettier --write"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
