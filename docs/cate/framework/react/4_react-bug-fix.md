@@ -282,6 +282,131 @@ const useAsync = <D>(
 在使用 hooks 的时候需要注意 `setState` 的调用时机，
 通常可以使用 `useEffect` 来清楚执行过程中产生的副作用。
 
+## `useState` 懒加载
+
+`useState` 为我们提供了惰性初始化的功能，当 `useState` 的第一个参数为
+一个函数时，React 就会认为我们使用惰性初始化的操作，会在第一次执行 render
+的时候执行该函数，同时把惰性初始化函数的返回值作为 initialState。
+
+考虑下面的例子：
+
+```tsx
+import { useState } from 'react'
+
+const doSomeExpensiveTasks = () => {
+  console.log('do some expensive tasks.')
+}
+const UseStateInifiniteRunExample1 = () => {
+  const [count, setCount] = useState(() => {
+    doSomeExpensiveTasks()
+    return 0
+  })
+
+  return (
+    <div>
+      <p>count: {count}</p>
+      <button onClick={() => setCount(count => count + 1)}>+</button>
+    </div>
+  )
+}
+```
+
+<img src="./images/2021-08-28-14-25-09.png" alt="img" style="width:100%;"/>
+
+从控制台的输出来看，确实如此。
+
+正因为这样的特性，我们不能直接使用 `useState` 将函数作为 state（这也是
+React 设计之初不想看到的，当然我们可以使用惰性函数返回另一个函数来实现）。
+如果我们使用 `useState` 将函数作为 `state` 可能会发生意想不到的结果。
+
+考虑下面的例子：
+
+```tsx
+const useAsync = () => {
+  const [data, setData] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<null | Error>(null)
+  const isError = useMemo(() => !!error, [error])
+  const [retry, setRetry] = useState(() => {})
+
+  const run = (promise: Promise<any>) => {
+    setIsLoading(true)
+    setError(null)
+    setRetry(() => run(promise))
+    return promise
+      .then(data => {
+        setData(data)
+        setIsLoading(false)
+      })
+      .catch(e => {
+        setError(e)
+        setIsLoading(false)
+      })
+  }
+
+  return {
+    data,
+    run,
+    retry,
+    isError,
+    isLoading,
+  }
+}
+
+const UseStateInifiniteRunExample2 = () => {
+  const { run, retry } = useAsync()
+  run(Promise.resolve(1))
+  return <div></div>
+}
+```
+
+我们自定义一个 hook 用于执行异步函数，同时还提供一个 `retry` 重新执行
+的功能。执行上面的代码会发现，React 直接抛出一个错误：
+
+<img src="./images/2021-08-28-14-47-06.png" alt="img" style="width:100%;"/>
+
+这就是我们想用 `useState` 保存函数的错误。由于 `useState` 第一个参数如果是函数的话，React 会帮我们调用该函数。而在 `run` 函数中，我们
+`setRetry` 中传入一个函数，执行 `run` 方法，这样就造成递归调用。
+为了避免递归调用，我们可以用 `useRef` 来缓存函数。
+
+## `useRef` 缓存函数存在的问题
+
+考虑下面的例子：
+
+```tsx
+import React, { useRef, useState } from 'react'
+
+const UseRefExample1 = () => {
+  const [_, render] = useState<any>(null)
+  const retry = useRef(() => {
+    console.log('11111111')
+  })
+
+  const handleClick = () => {
+    retry.current = () => {
+      console.log('222222222')
+    }
+  }
+
+  return (
+    <div>
+      <button onClick={retry.current}>invoke retry</button>
+      <button onClick={handleClick}>change retry</button>
+      <button onClick={render}>invoke render</button>
+    </div>
+  )
+}
+```
+
+我们使用 `useRef` 缓存一个函数，然后设计一个 button，当点击的时候我们
+就改变 ref 缓存的函数，然而我们再执行的时候，却还是执行一开始的函数。
+如下图所示：
+
+![use ref](./images/useRef-pit.gif)
+
+这是因为 `useRef` 会产生一个引用，修改 `ref.current` 并不会使
+页面更新，所以需要等到下一个 `render` 的时候才会执行新的函数。
+
 ## Reference
 
 - [Warning: Can't Perform A React State Update On An Unmounted Component](https://www.vhudyma-blog.eu/warning-cant-perform-a-react-state-update-on-an-unmounted-component/)
