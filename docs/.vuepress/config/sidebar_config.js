@@ -15,6 +15,7 @@ const sidebar = {
   ),
   [getSidebarName('html')]: getHtml('interview', '基础'),
   [getSidebarName('js')]: getJs(),
+  [getSidebarName('css')]: getCss(),
   [getSidebarName('perform')]: getPerform(),
   [`${getSidebarName('framework')}vue/`]: getFrameworkByName('vue'),
   [`${getSidebarName('framework')}react/`]: getFrameworkByName('react'),
@@ -41,6 +42,11 @@ function getHtml(...groups) {
 
 function getJs() {
   const path = resolve(basePath, './cate/js')
+  return getFileNames(path)
+}
+
+function getCss() {
+  const path = resolve(basePath, './cate/css')
   return getFileNames(path)
 }
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使用 css 实现一个扇形</title>
+  <style>
+    .box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 500px;
+      height: 500px;
+    }
+    
+    .triangle {
+      width: 0;
+      height: 0;
+      font-size: 0;
+      border: 50px solid transparent ;
+      border-top: 50px solid red;
+    }
+    
+    .sector {
+      width: 0;
+      height: 0;
+      font-size: 0;
+      border: 50px solid transparent;
+      border-top: 50px solid red;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="triangle"></div>
+  </div>
+  
+
+  <div class="box">
+    <div class="sector"></div>
+  </div>
+
+</body>
+</html>
