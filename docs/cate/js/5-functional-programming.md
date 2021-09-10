@@ -1,5 +1,5 @@
 ---
-title: javascript - 函数式编j程
+title: js - 函数式编程
 time: 2021-09-05
 author: ru shui
 category: javascript
