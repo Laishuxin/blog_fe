@@ -299,6 +299,62 @@ const useAsync = <D>(
 }
 ```
 
+### 与 `useReducer` 优雅连用
+
+```tsx{20-28}
+interface IState {
+  count: number
+}
+interface IAction {
+  type: string
+  payload: number
+}
+const reducer: React.Reducer<IState, IAction> = (state, action) => {
+  const { type, payload } = action
+  switch (type) {
+    case 'increment':
+      return { ...state, count: state.count + payload }
+    case 'decrement':
+      return { ...state, count: state.count - payload }
+    default:
+      return state
+  }
+}
+
+const useSafeDispatch = (dispatch: (...args: any[]) => any) => {
+  const mountedRef = useMountedRef()
+  return useCallback(
+    (...args: Parameters<typeof dispatch>) => {
+      return mountedRef.current ? dispatch(...args) : void 0
+    },
+    [dispatch, mountedRef],
+  )
+}
+
+const CanNotPerformExample2 = () => {
+  const [state, dispatch] = useReducer(reducer, { count: 0 })
+  const safeDispatch = useSafeDispatch(dispatch)
+  return (
+    <div>
+      <p>count: {state.count}</p>
+      <button onClick={() => safeDispatch({ type: 'increment', payload: 1 })}>
+        increment
+      </button>
+      <button onClick={() => safeDispatch({ type: 'decrement', payload: 1 })}>
+        decrement
+      </button>
+    </div>
+  )
+}
+```
+
+核心代码已高亮，主要是利用闭包对 `dispatch` 进行拦截，在执行
+`dispatch` 之前，判断是否为 `mounted` 状态，如果不是 `mounted`
+就不执行 `dispatch`。
+
+**注意**：`safeDispatch` 需要使用 `useCallback` 进行缓存，这是
+为了避免后续使用 react 的 hooks 需要添加依赖时导致无限渲染。
+
 ### 小结
 
 在使用 hooks 的时候需要注意 `setState` 的调用时机，
