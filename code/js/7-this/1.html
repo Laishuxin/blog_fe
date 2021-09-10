@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>this</title>
+  </head>
+  <body>
+    <script>
+      // 函数的直接调用
+      console.log('函数的直接调用...')
+      function fn() {
+        console.log('hello')
+      }
+      fn()
+      // 等价于
+      fn.call(window)
+      console.log('---------------')
+    </script>
+
+    <script>
+      console.log('函数作为对象的方法被调用')
+      const person = {
+        name: 'foo',
+        run(distance) {
+          console.log(
+            `${this.name} is running with the distance of ${distance} kilometers`,
+          )
+        },
+      }
+      person.run(5)
+      person.run.call(person, 5)
+      console.log('---------------')
+    </script>
+
+    <script>
+      // 综合题
+      console.log('综合应用...')
+      var name = 2
+      var a = {
+        name: 1,
+        say: function () {
+          console.log(this.name)
+        },
+      }
+
+      var fun = a.say
+      fun() // 函数的直接调用， this 指向 window 输出结果为 2
+      a.say() // 函数作为对象的方法进行调用，this 指向 a，输出结果为 1。
+
+      var b = {
+        name: 3,
+        say: function (fun) {
+          fun()
+        },
+      }
+      b.say(a.say) // 函数作为参数，最后调用的方式还是**函数的直接调用**，this指向 window，结果为 2。
+      b.say = a.say
+      b.say() // 函数作为对象的方法进行调用，this 指向调用者 b。结果为 3。
+      console.log('---------------')
+    </script>
+    <script>
+      console.log('特殊情况...')
+      var name = 'window' // 相当于 window.name = 'window'
+      class Student {
+        name = 'foo'
+
+        run(distance) {
+          console.log(
+            `${this.name} is running with the distance of ${distance} kilometers.`,
+          )
+        }
+      }
+      const student = new Student()
+      student.run(100) // 相当于 student.run.call(student, 100)
+
+      function forEach(arr, callback) {
+        console.log(this)
+        for (let i = 0; i < arr.length; i++) {
+          callback(arr[i], i, arr)
+        }
+      }
+
+      // 特殊情况
+      const distances = [100]
+      // case1: 对象的方法进行调j用
+      // distances.forEach(dis => student.run(dis))
+
+      // case2: point free
+      // 由于 class 内部默认采用严格模式，this 指向 undefined 而不是 window，
+      // 所以会直接报错而不是 输出 window is ...
+      // distances.forEach(student.run)
+      // forEach(distances, student.run)
+      console.log('---------------')
+    </script>
+    <script>
+      console.log('箭头函数...')
+      var name = 'window'
+      const obj1 = {
+        name: 'obj1',
+        print: () => {
+          console.log('name: ', this.name)
+        }
+      }
+      obj1.print()  // this 继承着父执行上下文，也就是 window。
+
+      const obj2 = {
+        name: 'obj2',
+        print() {
+          console.log('name: ', this.name)  
+        }
+      }
+      obj2.print()  // this 继承父执行上下文，也就是 function 的执行上下文，所以 this 指向 obj2
+      console.log('----------------')
+    </script>
+    <script>
+      console.log('es6 箭头函数...')
+      class Obj1 {
+        name = 'obj1'
+        print = () => {
+          console.log('name: ', this.name)
+        }
+      }
+      const { print } = new Obj1()
+      print() // print 和 name 一样，this指向当前实例对象。
+    </script>
+  </body>
+</html>
