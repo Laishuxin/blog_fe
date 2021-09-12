@@ -10,4 +10,4 @@ sticky: false
 
 <img src="./images/bg_about.jpg" style="width: 100%; border-radius: 10px;" />
 
-本博客用于记录计算机后端学习的点点滴滴。
+本博客用于记录前端学习的点点滴滴。

@@ -10,9 +10,7 @@ article: true
 sticky: true
 ---
 
-归档于前端工具，例如：webpack, vite, modularize.
-
-## content
-
-- [ 前端模块化 ](./1-modularize.md)
-- [ 插件- vue-lazy-load](2_1-plugin-vue-lazyload.md)
+- [ 前端工具 - 前端模块化 ](./1_1-modularize.md)
+- [ 前端工具 - 插件- vue-lazy-load](2_1-plugin-vue-lazyload.md)
+- [ 前端工具 - 打包工具 - vite](./3_1-builder-vite.md)
+- [ 前端工具 - mock 选型](./4_1-mock.md)

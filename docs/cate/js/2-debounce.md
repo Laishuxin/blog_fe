@@ -1,5 +1,5 @@
 ---
-title: js - 防抖
+title: js - 节流
 time: 2021-06-20
 author: ru shui
 category: javascript

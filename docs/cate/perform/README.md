@@ -11,3 +11,4 @@ sticky: true
 ---
 
 - [ 性能优化 - 常见的性能优化](./1-common.md)
+- [ 性能优化 - 代码简洁](./2-simplicity.md)

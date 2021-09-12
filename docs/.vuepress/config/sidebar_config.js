@@ -6,13 +6,7 @@ const cate = ['html', 'css', 'js', 'ts', 'perform', 'framework', 'tools']
 const getSidebarName = name => `/cate/${name}/`
 
 const sidebar = {
-  [getSidebarName('tools')]: getTools(
-    '模块化',
-    '插件',
-    '构建工具',
-    'mock',
-    'http',
-  ),
+  [getSidebarName('tools')]: getTools('模块化', '插件', '构建工具', 'mock'),
   [getSidebarName('html')]: getHtml('interview', '基础'),
   [getSidebarName('js')]: getJs(),
   [getSidebarName('css')]: getCss(),

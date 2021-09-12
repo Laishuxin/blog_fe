@@ -2,13 +2,13 @@
 title: HTML
 time: 2021-06-14
 author: ru shui
-category: html
+category: HTML
 tag:
-  - html
+  - HTML
 visitor: false
 article: true
 sticky: true
 ---
 
-- [前端面试 - html](./1_1-interview.md)
-- [html - 基础](./2_1-basic.md)
+- [HTML - 常见问题](./1_1-interview.md)
+- [HTML - 基础](./2_1-basic.md)

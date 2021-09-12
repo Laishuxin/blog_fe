@@ -1,5 +1,5 @@
 ---
-title: 前端模块化 - 模块化的由来
+title: 前端工具 - 模块化的由来
 time: 2021-06-20
 author: ru shui
 category: tools

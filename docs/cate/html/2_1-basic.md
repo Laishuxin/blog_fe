@@ -1,10 +1,10 @@
 ---
-title: html - 基础
+title: HTML - 基础
 time: 2021-06-14
 author: ru shui
-category: html
+category: HTML
 tag:
-  - html
+  - HTML
 visitor: false
 article: true
 sticky: false

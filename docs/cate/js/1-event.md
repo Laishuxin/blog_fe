@@ -1,5 +1,5 @@
 ---
-title: js - event
+title: js - 事件
 time: 2021-06-19
 author: ru shui
 category: javascript
