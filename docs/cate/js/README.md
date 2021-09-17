@@ -7,7 +7,7 @@ tag:
   - js
 visitor: false
 article: true
-sticky: true
+sticky: false
 ---
 
 ## content
@@ -20,3 +20,7 @@ sticky: true
 - [ js - 预编译 ](./6-pre-compile.md)
 - [ js - this](./7-this.md)
 - [ js - 拷贝 ](./8-copy.md)
+- [ js - 对象](./9-object.md)
+- [ js - 继承 ](./10-inherit.md)
+- [ js - 作用域 ](./11-scope.md)
+- [ js - 垃圾回收 ](./12-garbage-collection.md)

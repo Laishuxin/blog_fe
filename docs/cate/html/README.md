@@ -7,7 +7,7 @@ tag:
   - HTML
 visitor: false
 article: true
-sticky: true
+sticky: false
 ---
 
 - [HTML - 常见问题](./1_1-interview.md)

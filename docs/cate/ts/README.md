@@ -7,7 +7,7 @@ tag:
   - ts
 visitor: false
 article: true
-sticky: true
+sticky: false
 ---
 
 - [ ts - infer ](./1-infer.md)

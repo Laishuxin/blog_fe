@@ -7,7 +7,7 @@ tag:
   - tools
 visitor: false
 article: true
-sticky: true
+sticky: false
 ---
 
 - [ 前端工具 - 前端模块化 ](./1_1-modularize.md)

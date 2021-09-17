@@ -7,7 +7,7 @@ tag:
   - perform
 visitor: false
 article: true
-sticky: true
+sticky: false
 ---
 
 - [ 性能优化 - 常见的性能优化](./1-common.md)

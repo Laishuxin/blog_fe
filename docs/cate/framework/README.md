@@ -7,7 +7,7 @@ tag:
   - framework
 visitor: false
 article: true
-sticky: true
+sticky: false
 ---
 
 ## content

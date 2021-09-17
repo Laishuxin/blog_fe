@@ -7,7 +7,7 @@ tag:
   - css
 visitor: false
 article: true
-sticky: true
+sticky: false
 ---
 
 - [ css - 绘制扇形 ](./1-sector.md)
