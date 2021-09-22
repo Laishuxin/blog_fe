@@ -17,3 +17,4 @@ sticky: false
 - [react - hooks](./3_react-hooks.md)
 - [react - 踩坑经历 ](./4_react-bug-fix.md)
 - [ react - mini hook](./6-react-mini-hooks.md)
+- [ react - 实现 react-redux ](./7-react-redux.md)
