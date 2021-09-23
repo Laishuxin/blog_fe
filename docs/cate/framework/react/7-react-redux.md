@@ -251,7 +251,7 @@ const Wrapper = () => {
 同时，我们还需要对 `UserModifier` 进行修改，从 `props` 中拿到 `state`，
 也可以拿到修改 `state` 的方法（`dispatch`）。
 
-```jsx{1,4,8}
+```jsx{2,4,8}
 // App.jsx
 const UserModifier = ({ dispatch, state }) => {
   const onChange = e =>
@@ -989,6 +989,688 @@ export const connectToUser = connect(userSelector, userDispatchers)
 
 之所以分成两次调用，是为了让我们创建一个半成品，允许我们与不同组件相结合，
 同时使用闭包进行缓存提高程序运行的效率。
+
+## 封装 Provider 和 createStore
+
+到目前为止，我们实现的 `react-redux` 存在一个严重的不足：我们的 `state` 和
+`reducer` 写死了。我们需要让用户自行初始化和传入 `reducer`。
+我们需要一个封装一个 `createStore` 的函数。具体做法如下：
+
+```jsx{3,4}
+// react-redux.jsx
+const store = {
+  state: null,
+  reducer: null,
+  setState(newState) {
+    store.state = newState
+    store.listeners.forEach(fn => fn(store.state))
+  },
+  listeners: [],
+  subscribe(fn) {
+    store.listeners.push(fn)
+    return () => {
+      const index = store.listeners.indexOf(fn)
+      if (index >= 0) store.listeners.splice(index, 1)
+    }
+  },
+}
+
+export const createStore = (reducer, initState) => {
+  store.state = initState
+  store.reducer = reducer
+  return store
+}
+```
+
+有了 `createStore` 我们就可以修改 `App` 里面的 `store`。
+
+```jsx
+// App.jsx
+const initState = {
+  user: { name: 'frank', age: 18 },
+  group: { name: 'frontend' },
+}
+
+/**
+ * 基于旧的 `state` 创建新的 `state`，如果不需要改变原有的 `state`，则返回上一次的 `state`。
+ * @param state
+ * @param { type: string, payload: any }
+ * @returns newState
+ */
+const reducer = (state, { type, payload }) => {
+  if (type === 'updateUser') {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        ...payload,
+      },
+    }
+  }
+  if (type === 'updateGroup') {
+    return {
+      ...state,
+      group: payload,
+    }
+  }
+  return state
+}
+
+const store = createStore(reducer, initState)
+```
+
+接下来我们就来封装一下 `Provider`，实现如下的效果：
+
+```jsx
+const App = () => {
+  return <Provider value={store}>{/*...*/}</Provider>
+}
+```
+
+我们只需要对 `AppContext.Provider` 进行简单封装即可：
+
+```jsx
+// react-redux.jsx
+const AppContext = createContext(null)
+export const Provider = ({ store, ...restProps }) => {
+  return <AppContext.Provider value={store} {...restProps} />
+}
+```
+
+## react-redux 及其各种概念
+
+我们上面实现的功能可以描述为下面的一张图：
+
+<div style="text-align: center;"><img src="./images/2021-09-22-19-24-22.png" alt="img" style="width:80%;"/></div>
+
+react-redux 为我们实现的是组件和 `store` 连接（`connect`）以及两个读和写的 API。
+
+其中，`connect` 做的是对组件进行封装。
+
+1. 从 `store` 里面获取读和写的 API。（我们的代码直接从 `store` 上拿）
+2. 对拿到的接口进行封装。根据 `mapStateToProps` 和 `mapDispatchToProps` 进行封装。
+3. 在恰当的时候进行更新。只有 `store` 发生变化，才对页面进行更新。
+4. 渲染组件。
+
+```jsx
+export const connect = (mapStateToProps, mapDispatchToProps) => Component => {
+  return props => {
+    const [, update] = useState({})
+    const dispatch = action => {
+      store.setState(store.reducer(store.state, action))
+    }
+
+    mapStateToProps =
+      typeof mapStateToProps === 'function'
+        ? mapStateToProps
+        : state => ({ state })
+    const data = mapStateToProps(store.state)
+
+    const dispatchers =
+      typeof mapDispatchToProps === 'function'
+        ? mapDispatchToProps(dispatch)
+        : { dispatch }
+
+    useEffect(
+      () =>
+        store.subscribe(() => {
+          const newData = mapStateToProps(store.state)
+          if (!shallowEqual(data, newData)) {
+            update({})
+          }
+        }),
+      [data],
+    )
+
+    return <Component {...props} {...dispatchers} {...data} />
+  }
+```
+
+现在我们已经知道 `react-redux` 的绝大部分概念：
+
+1. store
+2. state
+3. dispatch
+   - reducer
+   - initState
+   - action
+     - type；action 的类型。
+     - payload：action 携带的信息。
+4. connect
+5. Provider
+6. middlewares
+
+接下来我们讲一下最后的一个 `middleware`，在讲之前，我们先对原有的 API 重构，
+使得对外暴露更少的接口。
+
+## 重构
+
+下面我们将会对代码进行重构，实现与 `Redux` 一样简洁的接口：
+
+Store Methods:
+
+1. `getState()`
+2. `dispatch(action)`
+3. `subscribe(listener)`
+4. `replaceReducer(nextReducer)`
+
+重构的过程非常简单，只需要将 `store` 中部分成员变量抽离到模块作用域下，
+引用到 `store.method` 的部分改为从模块作用域下获取。重构后的代码如下：
+
+```jsx
+import { createContext, useState, useEffect } from 'react'
+import {
+  shallowEqual,
+  isFunc /* 将 typeof fn === 'function' 抽离到 utils 下 */,
+} from './utils'
+const AppContext = createContext(null)
+export const Provider = ({ store, ...restProps }) => (
+  <AppContext.Provider value={store} {...restProps} />
+)
+
+let state = null
+let reducer = null
+const listeners = []
+const setState = newState => {
+  state = newState
+  listeners.forEach(listener => listener(state))
+}
+const dispatch = action => setState(reducer(state, action))
+const getState = () => state
+const replaceReducer = nextReducer => (reducer = nextReducer)
+const subscribe = listener => {
+  listeners.push(listener)
+  return () => {
+    const index = listeners.indexOf(listener)
+    if (index >= 0) listeners.splice(index, 1)
+  }
+}
+
+const store = {
+  getState,
+  subscribe,
+  replaceReducer,
+  dispatch,
+}
+
+export const createStore = (_reducer, initState) => {
+  state = initState
+  reducer = _reducer
+  return store
+}
+
+export const connect = (mapStateToProps, mapDispatchToProps) => Component => {
+  return props => {
+    const [, update] = useState({})
+
+    mapStateToProps = isFunc(mapStateToProps)
+      ? mapStateToProps
+      : state => ({ state })
+    const data = mapStateToProps(state)
+
+    const dispatchers = isFunc(mapDispatchToProps)
+      ? mapDispatchToProps(dispatch)
+      : { dispatch }
+
+    useEffect(
+      () =>
+        store.subscribe(() => {
+          const newData = mapStateToProps(state)
+          if (!shallowEqual(data, newData)) {
+            update({})
+          }
+        }),
+      [data],
+    )
+
+    return <Component {...props} {...dispatchers} {...data} />
+  }
+}
+```
+
+## 异步 Action
+
+目前 Redux 是不支持异步 action 的，这是为了确保 `reducer` 是纯函数。
+为了让 `Redux` 支持异步 action 就出现了许多有名的中间件，下面就
+介绍一下**异步 action** 的由来以及实现异步 action 的原理。
+
+我们先来模拟一下异步 action 的场景：我们修改我们的 `UserModifier` 组件
+来模拟异步 action
+
+```jsx{16}
+// App.jsx
+const fetchData = url => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve({ data: { name: '1s 后返回的结果' } })
+    }, 1000)
+  })
+}
+const fetchUser = dispatch => {
+  fetchData('/user').then(response => {
+    dispatch({ type: 'updateUser', payload: response.data })
+  })
+}
+const UserModifier = connect()(({ state, dispatch }) => {
+  console.log('UserModifier: ', Math.random())
+  const handleClick = () => {
+    fetchUser(dispatch)
+  }
+
+  return (
+    <div>
+      <div>user: {state.user.name}</div>
+      <button onClick={handleClick}>异步获取 user</button>
+    </div>
+  )
+})
+```
+
+上面的代码我们只是对异步请求进行封装，
+当我们点击按钮的时候就会发送一个异步的请求，然后渲染视图：
+
+<div style="text-align: center;"><img src="./images/7-react-redux-exact-async-action1.gif" alt="img" style="width:80%;"/></div>
+
+虽然目的实现了，但是从代码层面上看好像有些问题：
+
+1. 为什么我们的 `fetchUser` 要获取 `dispatch` ？
+2. 为什么是 `fetchUser(dispatch)`？如果我们能做到 `dispatch(fetchUser)` 是不是更符合语义，也更像同步 action？
+
+为了实现 `dispatch(fetchUser)` 我们就需要对代码进行改造：
+
+```jsx
+let prevDispatch dispatch
+dispatch = fn => fn(prevDispatch)
+```
+
+这样新的 `dispatch` 就可以支持类似 `dispatch(fetchUser)` 的调用方式，这与同步 action 实现统一。
+
+另一个问题也接踵而来：`fetchUser` 是一个异步请求，我们如何让 redux 支持异步 action？
+
+参考上面的代码，我们可以在 `react-redux` 中对 `dispatch` 进行修饰：
+
+```jsx{4-8}
+// react-redux.js
+let dispatch = action => setState(reducer(state, action))
+// 支持异步 action
+let prevDispatch = dispatch
+dispatch = action => {
+  if (typeof action === 'function') {
+    return action(dispatch)
+  }
+  return prevDispatch(action)
+}
+```
+
+我们先把 `dispatch` 用 `prevDispatch` 保存下来，然后修改原先的 `dispatch`。
+我们判断 `action` 是不是一个函数，如果 `action` 不是函数，我们就认为是同步 action
+执行 `prevDispatch(action)`，和我们之前的代码一样。
+
+重点在 `action` 是一个函数的时候，我认为此时的 action 是一个异步 action，所以我们
+就执行一个异步 action 的函数，并且把 `dispatch` 作为异步 action 的参数传入。
+
+**注意**：这里不能使用 `prevDispatch`。这是因为我们不知道异步 action 内部是否还嵌套另一个
+异步 action，所以采用**递归** 的方式确保最终拿到的 `action` 是我们想要的。
+
+事实上，上面的代码是 `redux-thunk` 的简化版。我们来看下 `react-thunk` 是实现（也就几行代码）：
+
+```jsx{3-7}
+function createThunkMiddleware(extraArgument) {
+  return ({ dispatch, getState }) => next => action => {
+    if (typeof action === 'function') {
+      return action(dispatch, getState, extraArgument)
+    }
+
+    return next(action)
+  }
+}
+
+const thunk = createThunkMiddleware()
+thunk.withExtraArgument = createThunkMiddleware
+
+export default thunk
+```
+
+其中代码高亮部分就是我们前面实现的。
+
+## middlewares
+
+如果每次要拓展 `dispatch` 都需要在源码层面进行修改，那显然是违反了**开闭原则**。
+我们先把前面的实现异步 action 的代码删除，我们先实现中间件功能，等下再通过中间件
+实现异步 action。
+
+下面是实现中间件的代码：
+
+```jsx
+// react-redux.js
+export const applyMiddleware = (...middlewares) => {
+  return (reducer, initState) => {
+    const store = createStore(reducer, initState)
+    middlewares.reverse()
+    // dispatch = store.dispatch
+    middlewares.forEach(
+      middleware => (dispatch = middleware(store)(dispatch)),
+    )
+    return Object.assign({}, store, { dispatch })
+  }
+}
+```
+
+下面我们先实现支持异步 action 的中间件，然后再回来解释 `applyMiddlewares` 的代码。
+
+```js
+// middlewares/redux-thunk.js
+export const reduxThunk = ({ dispatch, getState }) => {
+  return next => action => {
+    return typeof action === 'function'
+      ? action(dispatch, getState)
+      : next(action)
+  }
+}
+```
+
+现在我们再后头看 `applyMiddleware` 调用 `middleware` 部分。
+（注意这里的 `dispatch` 是作为一个全局变量使用的。）
+
+```js
+middlewares.forEach(middleware => (dispatch = middleware(store)(dispatch)))
+```
+
+我们把 `store` 传给 `reduxThunk`，`reduxThunk` 返回一个函数，该函数接收旧的 `dispatch`
+返回新的 `dispatch`。
+
+在 `reactThunk` 中新的 `dispatch` 为
+
+```js
+action => {
+  return typeof action === 'function'
+    ? action(dispatch, getState)
+    : next(action)
+```
+
+如果还看不懂的话，可以对比我们之前实现异步 action 的过程或者调试一下就明白了：
+
+```javascript
+let dispatch = action => setState(reducer(state, action))
+// 支持异步 action
+let prevDispatch = dispatch // react-thunk 返回的函数的第一个参数 next 就是 prevDispatch
+dispatch = action => {
+  // 赋值过程相当于 applyMiddleware 中的 (dispatch = middleware(store)(dispatch))
+  if (typeof action === 'function') {
+    return action(dispatch)
+  }
+  return prevDispatch(action)
+}
+```
+
+在 `applyMiddleware` 一开始就对 `middlewares` 进行反转(reverse) 目的是确保调用顺序是
+从左到右。
+至于在 `applyMiddleware` 中 `dispatch` 为全局变量与我们这里实现 `createStore` 有关。
+
+## redux-promise
+
+在实现 redux-promise 之前，我们还是照例来看一个例子：
+
+```jsx{6}
+// App.jsx
+const fetchData = url => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({ data: { name: '1s 后返回的结果' } })
+      // reject({ name: 'error...' })
+    }, 1000)
+  })
+}
+
+const fetchUser = () =>
+  fetchData('/user')
+    .then(response => response.data)
+    .catch({ name: 'unknown' })
+
+const UserModifier = connect()(({ state, dispatch }) => {
+  console.log('UserModifier: ', Math.random())
+  const handleClick = () => {
+    dispatch({
+      type: 'updateUser',
+      payload: fetchUser(),
+    })
+  }
+
+  return (
+    <div>
+      <div>user: {state.user.name}</div>
+      <button onClick={handleClick}>异步获取 user</button>
+    </div>
+  )
+})
+```
+
+我们将 `fetchData` 的返回值作为 payload，但是我们知道这个返回的是一个
+Promise，这就意味着我们需要修改我们的 `reducer` 让它支持 Promise
+版的 payload。为了在不修改原有的代码基础上，我们可以通过如下方式实现：
+
+```jsx{4-18}
+// App.jsx
+const UserModifier = connect()(({ state, dispatch }) => {
+  console.log('UserModifier: ', Math.random())
+  let prevDispatch = dispatch
+  dispatch = action => {
+    if (action.payload instanceof Promise) {
+      action.payload
+        .then(payload => {
+          return dispatch({ ...action, payload })
+        })
+        .catch(error => {
+          dispatch({ ...action, payload: error, error: true })
+          return Promise.reject(error)
+        })
+    } else {
+      return prevDispatch(action)
+    }
+  }
+
+  // ...
+})
+```
+
+其原理就是我们拦截 `dispatch` 的过程，判断 `payload` 是否为 `Promise`
+而决定 `dispatch` 的方式。和 `redux-thunk` 一样，在 `Promise.then`
+和 `Promise.catch` 中，我们需要使用递归 `dispatch`，这是避免嵌套 `Promise`。
+
+我们可以将上面的操作封装成一个 middleware：
+
+```jsx
+// middlewares/redux-Promise.js
+export const reduxPromise =
+  ({ dispatch }) =>
+  next =>
+  action => {
+    if (action.payload instanceof Promise) {
+      action.payload
+        .then(payload => dispatch({ ...action, payload }))
+        .catch(e => {
+          dispatch({ ...action, payload: e, error: true })
+          return Promise.reject(e)
+        })
+    } else {
+      return next(action)
+    }
+  }
+```
+
+我们再次改造之前的代码：
+
+```jsx
+// App.jsx
+// 需要导入 reduxPromise
+const store = applyMiddleware(reduxThunk, reduxPromise)(reducer, initState)
+
+const UserModifier = connect()(({ state, dispatch }) => {
+  console.log('UserModifier: ', Math.random())
+
+  const handleClick = () => {
+    dispatch({
+      type: 'updateUser',
+      payload: fetchUser(),
+    })
+  }
+
+  return (
+    <div>
+      <div>user: {state.user.name}</div>
+      <button onClick={handleClick}>异步获取 user</button>
+    </div>
+  )
+})
+```
+
+## combineReducers
+
+如果我们的 `reducers` 太多，但是 `createStore` 只能接收一个 `reducer` ，所以我们需要对多出来的 `reducer`
+进行合并。
+
+考虑下面的例子：
+
+```jsx
+// App.jsx
+const initState = {
+  count: 0,
+  todos: ['old todo'],
+}
+
+const countReducer = (state, { type }) => {
+  switch (type) {
+    case 'INCREMENT':
+      return state + 1
+    case 'DECREMENT':
+      return state - 1
+  }
+  return state
+}
+
+const todosReducer = (state, { type, payload }) => {
+  switch (type) {
+    case 'ADD_TODO':
+      return [...state, payload]
+  }
+  return state
+}
+
+const allReducers = combineReducers({
+  count: countReducer,
+  todos: todosReducer,
+})
+
+const store = applyMiddleware(reduxThunk, reduxPromise)(
+  allReducers,
+  initState,
+)
+```
+
+我们合并两个 `reducer`，key 去获取相应的 state。
+
+**注意**：传入 `applyMiddleware`对象的 key 要与获取的 `state` 相一致，不然就获取不到数据。
+
+然后添加简单测试用例：
+
+```jsx
+// App.jsx
+const App = () => {
+  return (
+    <Provider value={store}>
+      <Counter />
+      <Todos />
+    </Provider>
+  )
+}
+
+const Counter = connect(state => ({
+  count: state.count,
+}))(({ count, dispatch }) => {
+  console.log(`count: ${count}`)
+  const handleIncrement = () => dispatch({ type: 'INCREMENT' })
+  const handleDecrement = () => dispatch({ type: 'DECREMENT' })
+
+  return (
+    <div>
+      <p>count: {count}</p>
+      <button onClick={handleIncrement}>increment</button>
+      <button onClick={handleDecrement}>decrement</button>
+    </div>
+  )
+})
+
+// 用来标识，别无它意
+let id = 0
+const Todos = connect(state => ({ todos: state.todos }))(
+  ({ todos, dispatch }) => {
+    console.log(`todos: ${todos}`)
+    const handleAddTodo = () =>
+      dispatch({ type: 'ADD_TODO', payload: `new todo ${id++}` })
+
+    return (
+      <div>
+        <p>todos: {JSON.stringify(todos)}</p>
+        <button onClick={handleAddTodo}>add todo</button>
+      </div>
+    )
+  },
+)
+```
+
+可以看到，我们在测试用例中使用 `dispatch` 与 单个 `reducer` 一摸一样。接下来，我们就来实现 `combineReducers`
+
+```jsx
+// react-redux.jsx
+export function combineReducers(reducers) {
+  if (typeof reducers !== 'object') {
+    return reducers
+  }
+  // 过滤不合法的 reducers
+  const reducerKeys = Object.keys(reducers)
+  const finalReducers = {}
+  for (let i = 0; i < reducerKeys.length; i++) {
+    const key = reducerKeys[i]
+    // 只有是函数才认为是合法的 reducer
+    if (isFunc(reducers[key])) {
+      finalReducers[key] = reducers[key]
+    }
+  }
+
+  const finalReducerKeys = Object.keys(finalReducers)
+  return function combine(state, action) {
+    const nextState = {}
+    let hasChanged = false
+
+    for (let i = 0; i < finalReducerKeys.length; i++) {
+      const key = finalReducerKeys[i]
+      const reducer = finalReducers[key]
+
+      const previousStateForKey = state[key]
+      const nextStateForKey = reducer(previousStateForKey, action)
+      nextState[key] = nextStateForKey
+      hasChanged = hasChanged || previousStateForKey !== nextStateForKey
+    }
+    hasChanged =
+      hasChanged || finalReducerKeys.length !== Object.keys(nextState).length
+    return hasChanged ? nextState : state
+  }
+}
+```
+
+`combineReducers` 返回的新的 `reducer`（函数）。
+
+1. 我们需要检验一下入参，过滤掉非法的 `reducer`。
+2. 新的 `reducer` 会遍历所有的 `reducers` 映射到 `nextState`中。
+3. 在执行过程中，我们会判断状态是否发生变化，如果状态没有发生变化，我们依旧返回旧的 `state`。
+
+简单地验证我们写的 `combineReducers`：
+
+<div style="text-align: center;"><img src="./images/7-react-redux-combineReducers.gif" alt="img" style="width:80%;"/></div>
+
+## Reference
+
+- [Redux 源码专精（17 集完整版）](https://www.bilibili.com/video/BV1254y1L7UP?p=16&spm_id_from=pageDriver)
 
 ## Appendix
 
