@@ -13,7 +13,7 @@ sticky: false
 ## 问题描述
 
 在实现水平 `Menu` 下拉显示的时候，为了美观 `SubMenu`
-与 `Item` 偏移了几个像素，本来想实现如下的效果（外站截取至 Vue 官网）
+与 `Item` 偏移了几个像素，本来想实现如下的效果（外站截取至 Vue 官
 
 <div style="text-align: center;"><img src="./images/quick-response.gif" alt="img" style="width:80%;"/></div>
 

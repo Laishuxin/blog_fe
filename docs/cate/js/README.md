@@ -24,3 +24,5 @@ sticky: false
 - [ js - 继承 ](./10-inherit.md)
 - [ js - 作用域 ](./11-scope.md)
 - [ js - 垃圾回收 ](./12-garbage-collection.md)
+- [ js - 事件循环 ](./13-event-loop.md)
+- [ js - 手写部分原生函数 ](./14-override.md)
