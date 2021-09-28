@@ -26,3 +26,4 @@ sticky: false
 - [ js - 垃圾回收 ](./12-garbage-collection.md)
 - [ js - 事件循环 ](./13-event-loop.md)
 - [ js - 手写部分原生函数 ](./14-override.md)
+- [ js - 小而美的 promise 缓存 ](./15-promise-cache.md)

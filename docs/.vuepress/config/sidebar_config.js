@@ -10,7 +10,7 @@ const sidebar = {
   [getSidebarName('html')]: getHtml('interview', '基础'),
   [getSidebarName('js')]: getJs(),
   [getSidebarName('css')]: getCss(),
-  [getSidebarName('perform')]: getPerform(),
+  '/cate/perform': getPerform('性能优化方法论'),
   [`${getSidebarName('framework')}vue/`]: getFrameworkByName('vue'),
   [`${getSidebarName('framework')}react/`]: getFrameworkByName('react'),
   [getSidebarName('framework')]: getFramework(),
@@ -44,9 +44,16 @@ function getCss() {
   return getFileNames(path)
 }
 
-function getPerform() {
-  const path = resolve(basePath, './cate/perform')
-  return getFileNames(path)
+function getPerform(...groups) {
+  const path = resolve(basePath, './cate/perform/')
+  const group = getFileNamesByGroups(path, groups)
+  return groups.map(item => {
+    return {
+      title: item,
+      collapsable: false,
+      children: group[item],
+    }
+  })
 }
 
 function getFramework() {
