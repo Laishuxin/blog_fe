@@ -9,7 +9,7 @@ module.exports = config({
   base: '/blog_fe/',
   lang: 'zh-CN',
   title: 'Ru Shui',
-  description: `To Build Amazing Things !`,
+  description: `Frontend For Everyone`,
   theme: 'vuepress-theme-hope',
   head,
   themeConfig: {
